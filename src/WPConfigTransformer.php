@@ -8,7 +8,6 @@
  * $config_transformer->exists( 'constant', 'WP_DEBUG' );       // Returns true
  * $config_transformer->add( 'constant', 'WP_DEBUG', true );    // Returns false
  * $config_transformer->update( 'constant', 'WP_DEBUG', true ); // Returns true
- * $config_transformer->get( 'constant', 'WP_DEBUG' );          // Returns true
  */
 class WPConfigTransformer {
 
@@ -75,18 +74,6 @@ class WPConfigTransformer {
 		}
 
 		return isset( $this->wp_configs[ $type ][ $name ] );
-	}
-
-	/**
-	 * Get a config value from the wp-config.php file.
-	 *
-	 * @param string $type Config type (constant or variable).
-	 * @param string $name Config name.
-	 *
-	 * @return mixed|null
-	 */
-	public function get( $type, $name ) {
-		return $this->exists( $type, $name ) ? $this->wp_configs[ $type ][ $name ]['value'] : null;
 	}
 
 	/**
