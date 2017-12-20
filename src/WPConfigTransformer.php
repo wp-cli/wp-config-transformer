@@ -131,11 +131,18 @@ class WPConfigTransformer {
 			return $this->add( $type, $name, $value, $raw );
 		}
 
-		$old_value = $this->wp_configs[ $type ][ $name ]['value'];
 		$old_src   = $this->wp_configs[ $type ][ $name ]['src'];
+		$old_value = $this->wp_configs[ $type ][ $name ]['value'];
 
 		$new_value = ( $raw && is_string( $value ) ) ? $value : var_export( $value, true );
-		$new_src   = ( $normalize ) ? $this->normalize( $type, $name, $new_value ) : str_replace( $old_value, $new_value, $old_src );
+
+		if ( $normalize ) {
+			$new_src = $this->normalize( $type, $name, $new_value );
+		} else {
+			$new_parts    = $this->wp_configs[ $type ][ $name ]['parts'];
+			$new_parts[1] = str_replace( $old_value, $new_value, $new_parts[1] ); // Only edit the value part.
+			$new_src      = implode( '', $new_parts );
+		}
 
 		$contents = str_replace( $old_src, $new_src, $this->wp_config_src );
 
@@ -194,14 +201,19 @@ class WPConfigTransformer {
 	protected function parse_wp_config( $src ) {
 		$configs = [];
 
-		preg_match_all( '/^\h*define\s*\(\s*[\'"](\w+)[\'"]\s*,\s*(.*?)\s*\)\s*;/ims', $src, $constants );
+		preg_match_all( '/^(\h*define\s*\(\s*[\'"](\w*?)[\'"]\s*)(,\s*(.*?)\s*)((?:,\s*(?:true|false)\s*)?\)\s*;)/ims', $src, $constants );
 		preg_match_all( '/^\h*\$(\w+)\s*=\s*(.*?)\s*;/ims', $src, $variables );
 
-		if ( ! empty( $constants[0] ) && ! empty( $constants[1] ) && ! empty( $constants[2] ) ) {
-			foreach ( $constants[1] as $index => $name ) {
+		if ( ! empty( $constants[0] ) && ! empty( $constants[1] ) && ! empty( $constants[2] ) && ! empty( $constants[3] ) && ! empty( $constants[4] ) && ! empty( $constants[5] ) ) {
+			foreach ( $constants[2] as $index => $name ) {
 				$configs['constant'][ $name ] = array(
 					'src'   => $constants[0][ $index ],
-					'value' => $constants[2][ $index ],
+					'value' => $constants[4][ $index ],
+					'parts' => array(
+						$constants[1][ $index ],
+						$constants[3][ $index ],
+						$constants[5][ $index ],
+					),
 				);
 			}
 		}
