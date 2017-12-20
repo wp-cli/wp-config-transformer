@@ -135,7 +135,7 @@ class WPConfigTransformer {
 		$old_src   = $this->wp_configs[ $type ][ $name ]['src'];
 
 		$new_value = ( $raw && is_string( $value ) ) ? $value : var_export( $value, true );
-		$new_src = ( $normalize ) ? $this->normalize( $type, $name, $new_value ) : str_replace( $old_value, $new_value, $old_src );
+		$new_src   = ( $normalize ) ? $this->normalize( $type, $name, $new_value ) : str_replace( $old_value, $new_value, $old_src );
 
 		$contents = str_replace( $old_src, $new_src, $this->wp_config_src );
 
