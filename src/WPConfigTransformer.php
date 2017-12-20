@@ -8,6 +8,7 @@
  * $config_transformer->exists( 'constant', 'WP_DEBUG' );       // Returns true
  * $config_transformer->add( 'constant', 'WP_DEBUG', true );    // Returns false
  * $config_transformer->update( 'constant', 'WP_DEBUG', true ); // Returns true
+ * $config_transformer->remove( 'constant', 'WP_DEBUG' );       // Returns true
  */
 class WPConfigTransformer {
 
