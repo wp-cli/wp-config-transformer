@@ -1,5 +1,4 @@
 # WP Config Transformer
-=====================
 
 Programmatically edit a `wp-config.php` file.
 
