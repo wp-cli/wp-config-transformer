@@ -202,7 +202,7 @@ class WPConfigTransformer {
 		$configs = [];
 
 		preg_match_all( '/^(\h*define\s*\(\s*[\'"](\w*?)[\'"]\s*)(,\s*(.*?)\s*)((?:,\s*(?:true|false)\s*)?\)\s*;)/ims', $src, $constants );
-		preg_match_all( '/^\h*\$(\w+)\s*=\s*(.*?)\s*;/ims', $src, $variables );
+		preg_match_all( '/^(\h*\$(\w+)\s*=)(\s*(.*?)\s*;)/ims', $src, $variables );
 
 		if ( ! empty( $constants[0] ) && ! empty( $constants[1] ) && ! empty( $constants[2] ) && ! empty( $constants[3] ) && ! empty( $constants[4] ) && ! empty( $constants[5] ) ) {
 			foreach ( $constants[2] as $index => $name ) {
@@ -218,11 +218,17 @@ class WPConfigTransformer {
 			}
 		}
 
-		if ( ! empty( $variables[0] ) && ! empty( $variables[1] ) && ! empty( $variables[2] ) ) {
-			foreach ( $variables[1] as $index => $name ) {
+		if ( ! empty( $variables[0] ) && ! empty( $variables[1] ) && ! empty( $variables[2] ) && ! empty( $variables[3] ) && ! empty( $variables[4] ) ) {
+			// Remove duplicate(s), last definition wins.
+			$variables[2] = array_reverse( array_unique( array_reverse( $variables[2], true ) ), true );
+			foreach ( $variables[2] as $index => $name ) {
 				$configs['variable'][ $name ] = array(
 					'src'   => $variables[0][ $index ],
-					'value' => $variables[2][ $index ],
+					'value' => $variables[4][ $index ],
+					'parts' => array(
+						$variables[1][ $index ],
+						$variables[3][ $index ],
+					),
 				);
 			}
 		}
