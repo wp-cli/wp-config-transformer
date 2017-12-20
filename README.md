@@ -2,7 +2,7 @@
 
 Programmatically edit a `wp-config.php` file.
 
-## Basic Usage
+## Basic usage
 
 ### Instantiate
 
@@ -10,7 +10,7 @@ Programmatically edit a `wp-config.php` file.
 $config_transformer = new WPConfigTransformer( '/path/to/wp-config.php' );
 ```
 
-### Transform Constants
+### Transform constants
 
 ```php
 $config_transformer->update( 'constant', 'WP_DEBUG', true );
@@ -18,7 +18,7 @@ $config_transformer->add( 'constant', 'MY_SPECIAL_CONFIG', 'foo' );
 $config_transformer->remove( 'constant', 'MY_SPECIAL_CONFIG' );
 ```
 
-### Transform Variables
+### Transform variables
 
 ```php
 $config_transformer->update( 'variable', 'table_prefix', 'wp_custom_' );
@@ -26,7 +26,7 @@ $config_transformer->add( 'variable', 'my_special_global', 'foo' );
 $config_transformer->remove( 'variable', 'my_special_global' );
 ```
 
-### Check Existence
+### Check for existence
 
 ```php
 if ( $config_transformer->exists( 'constant', 'MY_SPECIAL_CONFIG' ) ) {
@@ -38,9 +38,14 @@ if ( $config_transformer->exists( 'variable', 'my_special_global' ) ) {
 }
 ```
 
-## How It Works
+## How it works
 
-### Editing in Place
+### Parsing configs
+
+TODO
+
+### Editing in place
+
 Due to the unsemantic nature of the `wp-config.php` file, and PHP's loose syntax in general, the WP Config Transformer takes an "edit in place" strategy in order to preserve the original formatting and whatever other obscurities may be taking place in the block. After all, we only care about transforming values, not constant or variable names.
 
 To achieve this, the following steps are performed:
@@ -90,7 +95,7 @@ define( 'WP_DEBUG', true );
 
 Noice!
 
-### Formatting Values
+### Formatting values
 
 Values are converted to PHP syntax using `var_export()`, this ensures strings are always quoted, and non-strings use the `raw` format automatically.
 
@@ -117,10 +122,10 @@ $config_transformer->update( 'constant', 'FOO', 'TRUE', [ 'raw' => true ] );
 // define( 'FOO', TRUE );
 ```
 
-## Tests
+## Running tests
 
 TODO
 
-## Known Issues
+## Known issues
 
 TODO
