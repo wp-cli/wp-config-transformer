@@ -239,13 +239,17 @@ class WPConfigTransformer {
 	/**
 	 * Save the wp-config.php file with new contents.
 	 *
-	 * @throws Exception If there is a failure when saving the wp-config.php file.
+	 * @throws Exception If the contents are empty or there is a failure when saving the wp-config.php file.
 	 *
 	 * @param string $contents New config contents.
 	 *
 	 * @return bool
 	 */
 	protected function save( $contents ) {
+		if ( ! $contents ) {
+			throw new Exception( 'Cannot save the wp-config.php file with empty contents.' );
+		}
+
 		if ( $contents === $this->wp_config_src ) {
 			return false;
 		}
