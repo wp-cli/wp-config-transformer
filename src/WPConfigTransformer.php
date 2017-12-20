@@ -85,8 +85,8 @@ class WPConfigTransformer {
 	 * @param string $type   Config type (constant or variable).
 	 * @param string $name   Config name.
 	 * @param mixed  $value  Config value.
-	 * @param bool   $raw    (optional) Force raw string format without quotes.
-	 * @param string $target (optional) Config placement target (insert definition before).
+	 * @param bool   $raw    (optional) Force raw format value without quotes (only applies to strings).
+	 * @param string $target (optional) Config placement target (definition is inserted before).
 	 *
 	 * @return bool
 	 */
@@ -115,7 +115,7 @@ class WPConfigTransformer {
 	 * @param string $type      Config type (constant or variable).
 	 * @param string $name      Config name.
 	 * @param mixed  $value     Config value.
-	 * @param bool   $raw       (optional) Force raw string format without quotes.
+	 * @param bool   $raw       (optional) Force raw format value without quotes (only applies to strings).
 	 * @param bool   $normalize (optional) Normalize config definition syntax using WP Coding Standards.
 	 *
 	 * @return bool
