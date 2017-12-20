@@ -2,13 +2,6 @@
 
 /**
  * Transform a wp-config.php file.
- *
- * EXAMPLE:
- * $config_transformer = new WPConfigTransformer( '/path/to/wp-config.php' );
- * $config_transformer->exists( 'constant', 'WP_DEBUG' );       // Returns true
- * $config_transformer->add( 'constant', 'WP_DEBUG', true );    // Returns false
- * $config_transformer->update( 'constant', 'WP_DEBUG', true ); // Returns true
- * $config_transformer->remove( 'constant', 'WP_DEBUG' );       // Returns true
  */
 class WPConfigTransformer {
 
@@ -88,20 +81,27 @@ class WPConfigTransformer {
 	 *
 	 * @throws Exception If the config placement target could not be located.
 	 *
-	 * @param string $type   Config type (constant or variable).
-	 * @param string $name   Config name.
-	 * @param mixed  $value  Config value.
-	 * @param bool   $raw    (optional) Force raw format value without quotes (only applies to strings).
-	 * @param string $target (optional) Config placement target (definition is inserted before).
+	 * @param string $type    Config type (constant or variable).
+	 * @param string $name    Config name.
+	 * @param mixed  $value   Config value.
+	 * @param array  $options (optional) Array of special behavior options.
 	 *
 	 * @return bool
 	 */
-	public function add( $type, $name, $value, $raw = false, $target = null ) {
+	public function add( $type, $name, $value, $options = array() ) {
 		if ( $this->exists( $type, $name ) ) {
 			return false;
 		}
 
-		$target = is_null( $target ) ? "/* That's all, stop editing!" : $target;
+		$defaults = array(
+			'raw'    => false, // Force raw format value without quotes (only applies to strings).
+			'target' => "/* That's all, stop editing!", // Config placement target (definition is inserted before).
+		);
+
+		list( $raw, $target ) = array_values( array_merge( $defaults, $options ) );
+
+		$raw    = (bool) $raw;
+		$target = (string) $target;
 
 		if ( false === strpos( $this->wp_config_src, $target ) ) {
 			throw new Exception( 'Unable to locate placement target.' );
@@ -118,18 +118,27 @@ class WPConfigTransformer {
 	/**
 	 * Update an existing config in the wp-config.php file.
 	 *
-	 * @param string $type      Config type (constant or variable).
-	 * @param string $name      Config name.
-	 * @param mixed  $value     Config value.
-	 * @param bool   $raw       (optional) Force raw format value without quotes (only applies to strings).
-	 * @param bool   $normalize (optional) Normalize config definition syntax using WP Coding Standards.
+	 * @param string $type    Config type (constant or variable).
+	 * @param string $name    Config name.
+	 * @param mixed  $value   Config value.
+	 * @param array  $options (optional) Array of special behavior options.
 	 *
 	 * @return bool
 	 */
-	public function update( $type, $name, $value, $raw = false, $normalize = false ) {
+	public function update( $type, $name, $value, $options = array() ) {
 		if ( ! $this->exists( $type, $name ) ) {
 			return $this->add( $type, $name, $value, $raw );
 		}
+
+		$defaults = array(
+			'normalize' => false, // Normalize config definition syntax using WP Coding Standards.
+			'raw'       => false, // Force raw format value without quotes (only applies to strings).
+		);
+
+		list( $normalize, $raw ) = array_values( array_merge( $defaults, $options ) );
+
+		$normalize = (bool) $normalize;
+		$raw       = (bool) $raw;
 
 		$old_src   = $this->wp_configs[ $type ][ $name ]['src'];
 		$old_value = $this->wp_configs[ $type ][ $name ]['value'];
@@ -169,7 +178,7 @@ class WPConfigTransformer {
 	}
 
 	/**
-	 * Return normalized src for a name/value pair.
+	 * Return normalized source for a name/value pair.
 	 *
 	 * @throws Exception If no normalization exists for the requested config type.
 	 *
