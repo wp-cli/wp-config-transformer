@@ -155,7 +155,7 @@ class WPConfigTransformer {
 			return false;
 		}
 
-		$pattern  = sprintf( '/%s\s*(.)/', preg_quote( $this->wp_configs[ $type ][ $name ]['src'] ) );
+		$pattern  = sprintf( '/^\h*%s\s*(\S|$)/', preg_quote( $this->wp_configs[ $type ][ $name ]['src'] ) );
 		$contents = preg_replace( $pattern, '$1', $this->wp_config_src );
 
 		return $this->save( $contents );
