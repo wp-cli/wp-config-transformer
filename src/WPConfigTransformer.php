@@ -13,16 +13,22 @@
 class WPConfigTransformer {
 
 	/**
+	 * Path to the wp-config.php file.
+	 *
 	 * @var string
 	 */
 	protected $wp_config_path;
 
 	/**
+	 * Original contents of the wp-config.php file.
+	 *
 	 * @var string
 	 */
 	protected $wp_config_src;
 
 	/**
+	 * Array of parsed configs.
+	 *
 	 * @var array
 	 */
 	protected $wp_configs = [];
@@ -30,7 +36,7 @@ class WPConfigTransformer {
 	/**
 	 * Instantiate the class with a valid wp-config.php.
 	 *
-	 * @throws Exception
+	 * @throws Exception If the wp-config.php file is missing, unreadable, or unwritable.
 	 *
 	 * @param string $wp_config_path Path to a wp-config.php file.
 	 */
@@ -50,7 +56,7 @@ class WPConfigTransformer {
 	/**
 	 * Check whether a config exists in the wp-config.php file.
 	 *
-	 * @throws Exception
+	 * @throws Exception If the wp-config.php file is empty, has no configs, or the requested config type is invalid.
 	 *
 	 * @param string $type Config type (constant or variable).
 	 * @param string $name Config name.
@@ -66,7 +72,7 @@ class WPConfigTransformer {
 
 		$wp_configs = $this->parse_wp_config( $this->wp_config_src );
 		if ( ! $wp_configs ) {
-			throw new Exception( 'No constants defined in wp-config.php file.' );
+			throw new Exception( 'No configs defined in wp-config.php file.' );
 		}
 		$this->wp_configs = $wp_configs;
 
@@ -80,7 +86,7 @@ class WPConfigTransformer {
 	/**
 	 * Add a config to the wp-config.php file.
 	 *
-	 * @throws Exception
+	 * @throws Exception If the config placement target could not be located.
 	 *
 	 * @param string $type   Config type (constant or variable).
 	 * @param string $name   Config name.
@@ -158,7 +164,7 @@ class WPConfigTransformer {
 	/**
 	 * Return normalized src for a name/value pair.
 	 *
-	 * @throws Exception
+	 * @throws Exception If no normalization exists for the requested config type.
 	 *
 	 * @param string $type  Config type (constant or variable).
 	 * @param string $name  Config name.
@@ -215,7 +221,7 @@ class WPConfigTransformer {
 	/**
 	 * Save the wp-config.php file with new contents.
 	 *
-	 * @throws Exception
+	 * @throws Exception If there is a failure when saving the wp-config.php file.
 	 *
 	 * @param string $contents New config contents.
 	 *
