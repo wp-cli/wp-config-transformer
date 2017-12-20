@@ -144,7 +144,7 @@ class WPConfigTransformer {
 			$new_src      = implode( '', $new_parts );
 		}
 
-		$contents = str_replace( $old_src, $new_src, $this->wp_config_src );
+		$contents = preg_replace( sprintf( '/^%s/im', preg_quote( $old_src, '/' ) ), $new_src, $this->wp_config_src );
 
 		return $this->save( $contents );
 	}
@@ -162,7 +162,7 @@ class WPConfigTransformer {
 			return false;
 		}
 
-		$pattern  = sprintf( '/^%s\s*(\S|$)/im', preg_quote( $this->wp_configs[ $type ][ $name ]['src'] ) );
+		$pattern  = sprintf( '/^%s\s*(\S|$)/im', preg_quote( $this->wp_configs[ $type ][ $name ]['src'], '/' ) );
 		$contents = preg_replace( $pattern, '$1', $this->wp_config_src );
 
 		return $this->save( $contents );
