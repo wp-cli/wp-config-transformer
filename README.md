@@ -77,11 +77,11 @@ Will give us a result that safely changes _only_ the value, leaving the formatti
 ;
 ```
 
-### Options
+## Options
 
 Special behaviors when adding or updating configs are available using the options array.
 
-#### Normalization
+### Normalization
 
 In contrast to the "edit in place" strategy above, there is the option to normalize the output during a config update and effectively replace the existing syntax with output that adheres to WP Coding Standards.
 
@@ -107,7 +107,7 @@ define( 'WP_DEBUG', true );
 
 Noice!
 
-#### Raw format
+### Raw format
 
 Values are converted to PHP syntax using `var_export()`, this ensures strings are always quoted, and non-strings use the `raw` format automatically.
 
@@ -134,7 +134,7 @@ $config_transformer->update( 'constant', 'FOO', 'TRUE', [ 'raw' => true ] );
 // define( 'FOO', TRUE );
 ```
 
-#### Placement target
+### Placement target
 
 TODO
 
