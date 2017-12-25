@@ -13,7 +13,7 @@ $config_transformer = new WPConfigTransformer( '/path/to/wp-config.php' );
 ### Transform constants
 
 ```php
-$config_transformer->update( 'constant', 'WP_DEBUG', true );
+$config_transformer->update( 'constant', 'WP_DEBUG', 'true', [ 'raw' => true ] );
 $config_transformer->add( 'constant', 'MY_SPECIAL_CONFIG', 'foo' );
 $config_transformer->remove( 'constant', 'MY_SPECIAL_CONFIG' );
 ```
@@ -42,7 +42,8 @@ if ( $config_transformer->exists( 'variable', 'my_special_global' ) ) {
 
 ### Parsing configs
 
-TODO
+Constants: https://regex101.com/r/6AeNGP/1
+Variables: https://regex101.com/r/cSLZZz/1
 
 ### Editing in place
 
@@ -66,7 +67,7 @@ Consider the following horrifically-valid PHP block, that also happens to be usi
 The "edit in place" strategy means that running:
 
 ```php
-$config_transformer->update( 'constant', 'WP_DEBUG', true );
+$config_transformer->update( 'constant', 'WP_DEBUG', 'true', [ 'raw' => true ] );
 ```
 
 Will give us a result that safely changes _only_ the value, leaving the formatting and additional argument(s) unscathed:
@@ -96,7 +97,7 @@ Let's reconsider a poorly-formatted example:
 This time running:
 
 ```php
-$config_transformer->update( 'constant', 'WP_DEBUG', true, [ 'normalize' => true ] );
+$config_transformer->update( 'constant', 'WP_DEBUG', 'true', [ 'raw' => true, 'normalize' => true ] );
 ```
 
 Now we will get an output of:
@@ -109,9 +110,7 @@ Noice!
 
 ### Raw format
 
-Values are converted to PHP syntax using `var_export()`, this ensures strings are always quoted, and non-strings use the `raw` format automatically.
-
-But suppose you want to change your `ABSPATH` config _(gasp!)_. To do that, we can run:
+Suppose you want to change your `ABSPATH` config _(gasp!)_. To do that, we can run:
 
 ```php
 $config_transformer->update( 'constant', 'ABSPATH', "dirname( __FILE__ ) . '/somewhere/else/'", [ 'raw' => true ] );
@@ -119,27 +118,12 @@ $config_transformer->update( 'constant', 'ABSPATH', "dirname( __FILE__ ) . '/som
 
 The `raw` option means that instead of placing the value inside the config as a string `"dirname( __FILE__ ) . '/somewhere/else/'"` it will become unquoted (and executable) syntax `dirname( __FILE__ ) . '/somewhere/else/'`.
 
-Because non-strings use the `raw` format automatically, these two examples will have an identical result:
-
-```php
-$config_transformer->update( 'constant', 'FOO', true );
-$config_transformer->update( 'constant', 'FOO', 'true', [ 'raw' => true ] );
-// define( 'FOO', true );
-```
-
-However, an example of when you might want to manually specify the `raw` option, is if you really needed a boolean value to be displayed in CAPS, in which case you would specify `TRUE` as a string, along with the `raw` option flag:
-
-```php
-$config_transformer->update( 'constant', 'FOO', 'TRUE', [ 'raw' => true ] );
-// define( 'FOO', TRUE );
-```
-
 ### Placement target
 
 TODO
 
 ```php
-$config_transformer->update( 'constant', 'FOO', true, [ 'target' => '/** Absolute path to the WordPress directory' ] );
+$config_transformer->update( 'constant', 'FOO', 'bar', [ 'target' => '/** Absolute path to the WordPress directory', 'placement' => 'before', 'buffer' => "\n\n" ] );
 ```
 
 ## Running tests

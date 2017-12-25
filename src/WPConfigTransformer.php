@@ -29,7 +29,8 @@ class WPConfigTransformer {
 	/**
 	 * Instantiate the class with a valid wp-config.php.
 	 *
-	 * @throws Exception If the wp-config.php file is missing, unreadable, or unwritable.
+	 * @throws Exception If the wp-config.php file is missing.
+	 * @throws Exception If the wp-config.php file is not writable.
 	 *
 	 * @param string $wp_config_path Path to a wp-config.php file.
 	 */
@@ -37,19 +38,19 @@ class WPConfigTransformer {
 		if ( ! file_exists( $wp_config_path ) ) {
 			throw new Exception( 'wp-config.php file does not exist.' );
 		}
-		if ( ! is_readable( $wp_config_path ) ) {
-			throw new Exception( 'wp-config.php file is not readable.' );
-		}
+
 		if ( ! is_writable( $wp_config_path ) ) {
 			throw new Exception( 'wp-config.php file is not writable.' );
 		}
+
 		$this->wp_config_path = $wp_config_path;
 	}
 
 	/**
 	 * Check whether a config exists in the wp-config.php file.
 	 *
-	 * @throws Exception If the wp-config.php file is empty, has no configs, or the requested config type is invalid.
+	 * @throws Exception If the wp-config.php file is empty.
+	 * @throws Exception If the requested config type is invalid.
 	 *
 	 * @param string $type Config type (constant or variable).
 	 * @param string $name Config name.
@@ -58,16 +59,13 @@ class WPConfigTransformer {
 	 */
 	public function exists( $type, $name ) {
 		$wp_config_src = file_get_contents( $this->wp_config_path );
-		if ( ! $wp_config_src ) {
+
+		if ( ! trim( $wp_config_src ) ) {
 			throw new Exception( 'wp-config.php file is empty.' );
 		}
-		$this->wp_config_src = $wp_config_src;
 
-		$wp_configs = $this->parse_wp_config( $this->wp_config_src );
-		if ( ! $wp_configs ) {
-			throw new Exception( 'No configs defined in wp-config.php file.' );
-		}
-		$this->wp_configs = $wp_configs;
+		$this->wp_config_src = $wp_config_src;
+		$this->wp_configs    = $this->parse_wp_config( $this->wp_config_src );
 
 		if ( ! isset( $this->wp_configs[ $type ] ) ) {
 			throw new Exception( "Config type '{$type}' does not exist." );
@@ -79,38 +77,46 @@ class WPConfigTransformer {
 	/**
 	 * Add a config to the wp-config.php file.
 	 *
+	 * @throws Exception If the config value provided is not a string.
 	 * @throws Exception If the config placement target could not be located.
 	 *
 	 * @param string $type    Config type (constant or variable).
 	 * @param string $name    Config name.
-	 * @param mixed  $value   Config value.
+	 * @param string $value   Config value.
 	 * @param array  $options (optional) Array of special behavior options.
 	 *
 	 * @return bool
 	 */
-	public function add( $type, $name, $value, $options = array() ) {
+	public function add( $type, $name, $value, array $options = array() ) {
+		if ( ! is_string( $value ) ) {
+			throw new Exception( 'Config value must be a string.' );
+		}
+
 		if ( $this->exists( $type, $name ) ) {
 			return false;
 		}
 
 		$defaults = array(
-			'raw'    => false, // Force raw format value without quotes (only applies to strings).
-			'target' => "/* That's all, stop editing!", // Config placement target (definition is inserted before).
+			'raw'       => false, // Display value in raw format without quotes.
+			'target'    => "/* That's all, stop editing!", // Config placement target string.
+			'buffer'    => "\n\n", // Buffer between config definition and target string.
+			'placement' => 'before', // Config placement direction (insert before or after).
 		);
 
-		list( $raw, $target ) = array_values( array_merge( $defaults, $options ) );
+		list( $raw, $target, $buffer, $placement ) = array_values( array_merge( $defaults, $options ) );
 
-		$raw    = (bool) $raw;
-		$target = (string) $target;
+		$raw       = (bool) $raw;
+		$target    = (string) $target;
+		$buffer    = (string) $buffer;
+		$placement = (string) $placement;
 
 		if ( false === strpos( $this->wp_config_src, $target ) ) {
 			throw new Exception( 'Unable to locate placement target.' );
 		}
 
-		$new_value = ( $raw && is_string( $value ) ) ? $value : var_export( $value, true );
-		$new_src   = $this->normalize( $type, $name, $new_value );
-
-		$contents = str_replace( $target, $new_src . "\n\n" . $target, $this->wp_config_src );
+		$new_src  = $this->normalize( $type, $name, $this->format_value( $value, $raw ) );
+		$new_src  = ( 'after' === $placement ) ? $target . $buffer . $new_src : $new_src . $buffer . $target;
+		$contents = str_replace( $target, $new_src, $this->wp_config_src );
 
 		return $this->save( $contents );
 	}
@@ -118,32 +124,36 @@ class WPConfigTransformer {
 	/**
 	 * Update an existing config in the wp-config.php file.
 	 *
+	 * @throws Exception If the config value provided is not a string.
+	 *
 	 * @param string $type    Config type (constant or variable).
 	 * @param string $name    Config name.
-	 * @param mixed  $value   Config value.
+	 * @param string $value   Config value.
 	 * @param array  $options (optional) Array of special behavior options.
 	 *
 	 * @return bool
 	 */
-	public function update( $type, $name, $value, $options = array() ) {
+	public function update( $type, $name, $value, array $options = array() ) {
+		if ( ! is_string( $value ) ) {
+			throw new Exception( 'Config value must be a string.' );
+		}
+
 		if ( ! $this->exists( $type, $name ) ) {
-			return $this->add( $type, $name, $value, $raw );
+			return $this->add( $type, $name, $value, $options );
 		}
 
 		$defaults = array(
-			'normalize' => false, // Normalize config definition syntax using WP Coding Standards.
-			'raw'       => false, // Force raw format value without quotes (only applies to strings).
+			'raw'       => false, // Display value in raw format without quotes.
+			'normalize' => false, // Normalize config output using WP Coding Standards.
 		);
 
-		list( $normalize, $raw ) = array_values( array_merge( $defaults, $options ) );
+		list( $raw, $normalize ) = array_values( array_merge( $defaults, $options ) );
 
-		$normalize = (bool) $normalize;
 		$raw       = (bool) $raw;
-
+		$normalize = (bool) $normalize;
 		$old_src   = $this->wp_configs[ $type ][ $name ]['src'];
 		$old_value = $this->wp_configs[ $type ][ $name ]['value'];
-
-		$new_value = ( $raw && is_string( $value ) ) ? $value : var_export( $value, true );
+		$new_value = $this->format_value( $value, $raw );
 
 		if ( $normalize ) {
 			$new_src = $this->normalize( $type, $name, $new_value );
@@ -178,9 +188,27 @@ class WPConfigTransformer {
 	}
 
 	/**
+	 *
+	 *
+	 * @throws Exception When a raw value is requested for an empty string.
+	 *
+	 * @param string $value Config value.
+	 * @param bool   $raw   Display value in raw format without quotes.
+	 *
+	 * @return mixed
+	 */
+	protected function format_value( $value, $raw ) {
+		if ( $raw && '' === trim( $value ) ) {
+			throw new Exception( 'Raw value for empty string not supported.' );
+		}
+
+		return ( $raw ) ? $value : var_export( $value, true );
+	}
+
+	/**
 	 * Return normalized source for a name/value pair.
 	 *
-	 * @throws Exception If no normalization exists for the requested config type.
+	 * @throws Exception If the requested config type does not support normalization.
 	 *
 	 * @param string $type  Config type (constant or variable).
 	 * @param string $name  Config name.
@@ -208,7 +236,9 @@ class WPConfigTransformer {
 	 * @return array
 	 */
 	protected function parse_wp_config( $src ) {
-		$configs = [];
+		$configs             = [];
+		$configs['constant'] = [];
+		$configs['variable'] = [];
 
 		preg_match_all( '/^(\h*define\s*\(\s*[\'"](\w*?)[\'"]\s*)(,\s*(.*?)\s*)((?:,\s*(?:true|false)\s*)?\)\s*;)/ims', $src, $constants );
 		preg_match_all( '/^(\h*\$(\w+)\s*=)(\s*(.*?)\s*;)/ims', $src, $variables );
@@ -248,14 +278,15 @@ class WPConfigTransformer {
 	/**
 	 * Save the wp-config.php file with new contents.
 	 *
-	 * @throws Exception If the contents are empty or there is a failure when saving the wp-config.php file.
+	 * @throws Exception If the config file content provided is empty.
+	 * @throws Exception If there is a failure when saving the wp-config.php file.
 	 *
 	 * @param string $contents New config contents.
 	 *
 	 * @return bool
 	 */
 	protected function save( $contents ) {
-		if ( ! $contents ) {
+		if ( ! trim( $contents ) ) {
 			throw new Exception( 'Cannot save the wp-config.php file with empty contents.' );
 		}
 
