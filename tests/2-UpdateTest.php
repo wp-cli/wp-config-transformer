@@ -8,21 +8,19 @@ class UpdateTest extends TestCase
 	protected static $config_transformer;
 	protected static $raw_data = [];
 	protected static $string_data = [];
-	protected static $constants = [];
-	protected static $variables = [];
 
 	public static function setUpBeforeClass()
 	{
+		self::$raw_data    = explode( PHP_EOL, file_get_contents( __DIR__ . '/bin/raw-data.txt' ) );
+		self::$string_data = explode( PHP_EOL, file_get_contents( __DIR__ . '/bin/string-data.txt' ) );
+
+		if ( version_compare( PHP_VERSION, '7.0', '>=' ) ) {
+			self::$raw_data = array_merge( self::$raw_data, explode( PHP_EOL, file_get_contents( __DIR__ . '/bin/raw-data-extra.txt' ) ) );
+		}
+
 		self::$test_config_path = __DIR__ . '/wp-config-test-update.php';
 		file_put_contents( self::$test_config_path, "<?php\n\n" );
 		self::$config_transformer = new WPConfigTransformer( self::$test_config_path );
-
-		self::$raw_data    = explode( "\n", file_get_contents( __DIR__ . '/bin/raw-data.txt' ) );
-		self::$string_data = explode( "\n", file_get_contents( __DIR__ . '/bin/string-data.txt' ) );
-
-		if ( version_compare( PHP_VERSION, '7.0', '>=' ) ) {
-			self::$raw_data = array_merge( self::$raw_data, explode( "\n", file_get_contents( __DIR__ . '/bin/raw-data-extra.txt' ) ) );
-		}
 	}
 
 	public static function tearDownAfterClass()
@@ -32,90 +30,99 @@ class UpdateTest extends TestCase
 
 	public function testUpdateRawConstants()
 	{
-		foreach ( self::$raw_data as $i => $data ) {
-			$this->assertFalse( self::$config_transformer->exists( 'constant', "TEST_UPDATE_RAW_{$i}" ) );
-			$this->assertTrue( self::$config_transformer->add( 'constant', "TEST_UPDATE_RAW_{$i}", 'oldvalue', [ 'target' => '<?php', 'placement' => 'after' ] ) );
-			$this->assertTrue( self::$config_transformer->exists( 'constant', "TEST_UPDATE_RAW_{$i}" ) );
-			$this->assertTrue( self::$config_transformer->update( 'constant', "TEST_UPDATE_RAW_{$i}", $data, [ 'raw' => true ] ) );
+		foreach ( self::$raw_data as $d => $data ) {
+			$name = "TEST_CONST_UPDATE_RAW_{$d}";
+			$this->assertFalse( self::$config_transformer->exists( 'constant', $name ), $name );
+			$this->assertTrue( self::$config_transformer->add( 'constant', $name, 'oldvalue', [ 'target' => '<?php', 'placement' => 'after' ] ), $name );
+			$this->assertTrue( self::$config_transformer->exists( 'constant', $name ), $name );
+			$this->assertTrue( self::$config_transformer->update( 'constant', $name, $data, [ 'raw' => true ] ), $name );
 		}
 	}
 
 	public function testUpdateStringConstants()
 	{
-		foreach ( self::$string_data as $i => $data ) {
-			$this->assertFalse( self::$config_transformer->exists( 'constant', "TEST_UPDATE_STRING_{$i}" ) );
-			$this->assertTrue( self::$config_transformer->add( 'constant', "TEST_UPDATE_STRING_{$i}", 'oldvalue', [ 'target' => '<?php', 'placement' => 'after' ] ) );
-			$this->assertTrue( self::$config_transformer->exists( 'constant', "TEST_UPDATE_STRING_{$i}" ) );
-			$this->assertTrue( self::$config_transformer->update( 'constant', "TEST_UPDATE_STRING_{$i}", $data ) );
+		foreach ( self::$string_data as $d => $data ) {
+			$name = "TEST_CONST_UPDATE_STRING_{$d}";
+			$this->assertFalse( self::$config_transformer->exists( 'constant', $name ), $name );
+			$this->assertTrue( self::$config_transformer->add( 'constant', $name, 'oldvalue', [ 'target' => '<?php', 'placement' => 'after' ] ), $name );
+			$this->assertTrue( self::$config_transformer->exists( 'constant', $name ), $name );
+			$this->assertTrue( self::$config_transformer->update( 'constant', $name, $data ), $name );
 		}
 	}
 
 	public function testUpdateRawVariables()
 	{
-		foreach ( self::$raw_data as $i => $data ) {
-			$this->assertFalse( self::$config_transformer->exists( 'variable', "test_update_raw_{$i}" ) );
-			$this->assertTrue( self::$config_transformer->add( 'variable', "test_update_raw_{$i}", 'oldvalue', [ 'target' => '<?php', 'placement' => 'after' ] ) );
-			$this->assertTrue( self::$config_transformer->exists( 'variable', "test_update_raw_{$i}" ) );
-			$this->assertTrue( self::$config_transformer->update( 'variable', "test_update_raw_{$i}", $data, [ 'raw' => true ] ) );
+		foreach ( self::$raw_data as $d => $data ) {
+			$name = "test_var_update_raw_{$d}";
+			$this->assertFalse( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
+			$this->assertTrue( self::$config_transformer->add( 'variable', $name, 'oldvalue', [ 'target' => '<?php', 'placement' => 'after' ] ), "\${$name}" );
+			$this->assertTrue( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
+			$this->assertTrue( self::$config_transformer->update( 'variable', $name, $data, [ 'raw' => true ] ), "\${$name}" );
 		}
 	}
 
 	public function testUpdateStringVariables()
 	{
-		foreach ( self::$string_data as $i => $data ) {
-			$this->assertFalse( self::$config_transformer->exists( 'variable', "test_update_string_{$i}" ) );
-			$this->assertTrue( self::$config_transformer->add( 'variable', "test_update_string_{$i}", 'oldvalue', [ 'target' => '<?php', 'placement' => 'after' ] ) );
-			$this->assertTrue( self::$config_transformer->exists( 'variable', "test_update_string_{$i}" ) );
-			$this->assertTrue( self::$config_transformer->update( 'variable', "test_update_string_{$i}", $data ) );
+		foreach ( self::$string_data as $d => $data ) {
+			$name = "test_var_update_string_{$d}";
+			$this->assertFalse( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
+			$this->assertTrue( self::$config_transformer->add( 'variable', $name, 'oldvalue', [ 'target' => '<?php', 'placement' => 'after' ] ), "\${$name}" );
+			$this->assertTrue( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
+			$this->assertTrue( self::$config_transformer->update( 'variable', $name, $data ), "\${$name}" );
 		}
 	}
 
 	public function testConstantAddIfMissing()
 	{
-		$this->assertFalse( self::$config_transformer->exists( 'constant', 'TEST_UPDATE_ADD_MISSING' ) );
-		$this->assertTrue( self::$config_transformer->update( 'constant', 'TEST_UPDATE_ADD_MISSING', 'foo', [ 'target' => '<?php', 'placement' => 'after' ] ) );
-		$this->assertTrue( self::$config_transformer->exists( 'constant', 'TEST_UPDATE_ADD_MISSING' ) );
+		$name = 'TEST_CONST_UPDATE_ADD_MISSING';
+		$this->assertFalse( self::$config_transformer->exists( 'constant', $name ), $name );
+		$this->assertTrue( self::$config_transformer->update( 'constant', $name, 'foo', [ 'target' => '<?php', 'placement' => 'after' ] ), $name );
+		$this->assertTrue( self::$config_transformer->exists( 'constant', $name ), $name );
 	}
 
 	public function testVariableAddIfMissing()
 	{
-		$this->assertFalse( self::$config_transformer->exists( 'variable', 'test_update_add_missing' ) );
-		$this->assertTrue( self::$config_transformer->update( 'variable', 'test_update_add_missing', 'bar', [ 'target' => '<?php', 'placement' => 'after' ] ) );
-		$this->assertTrue( self::$config_transformer->exists( 'variable', 'test_update_add_missing' ) );
+		$name = 'test_var_update_add_missing';
+		$this->assertFalse( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
+		$this->assertTrue( self::$config_transformer->update( 'variable', $name, 'bar', [ 'target' => '<?php', 'placement' => 'after' ] ), "\${$name}" );
+		$this->assertTrue( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
 	}
 
 	public function testConfigValues()
 	{
 		require_once self::$test_config_path;
 
-		foreach ( self::$raw_data as $i => $data ) {
-			// Convert string to a real value.
-			eval( "\$data = $data;" );
+		foreach ( self::$raw_data as $d => $data ) {
+			eval( "\$data = $data;" ); // Convert string to a real value.
 			// Raw Constants
-			$this->assertTrue( defined( "TEST_UPDATE_RAW_{$i}" ), "TEST_UPDATE_RAW_{$i}" );
-			$this->assertNotEquals( 'oldvalue', constant( "TEST_UPDATE_RAW_{$i}" ), "TEST_UPDATE_RAW_{$i}" );
-			$this->assertEquals( $data, constant( "TEST_UPDATE_RAW_{$i}" ), "TEST_UPDATE_RAW_{$i}" );
+			$name = "TEST_CONST_UPDATE_RAW_{$d}";
+			$this->assertTrue( defined( $name ), $name );
+			$this->assertNotEquals( 'oldvalue', constant( $name ), $name );
+			$this->assertEquals( $data, constant( $name ), $name );
 			// Raw Variables
-			$this->assertTrue( ( isset( ${"test_update_raw_" . $i} ) || is_null( ${"test_update_raw_" . $i} ) ), "\$test_update_raw_{$i}" );
-			$this->assertNotEquals( 'oldvalue', ${"test_update_raw_" . $i}, "test_update_raw_{$i}" );
-			$this->assertEquals( $data, ${"test_update_raw_" . $i}, "test_update_raw_{$i}" );
+			$name = "test_var_update_raw_{$d}";
+			$this->assertTrue( ( isset( ${$name} ) || is_null( ${$name} ) ), "\${$name}" );
+			$this->assertNotEquals( 'oldvalue', ${$name}, "\${$name}" );
+			$this->assertEquals( $data, ${$name}, "\${$name}" );
 		}
 
-		foreach ( self::$string_data as $i => $data ) {
+		foreach ( self::$string_data as $d => $data ) {
 			// String Constants
-			$this->assertTrue( defined( "TEST_UPDATE_STRING_{$i}" ), "TEST_UPDATE_STRING_{$i}" );
-			$this->assertNotEquals( 'oldvalue', constant( "TEST_UPDATE_STRING_{$i}" ), "TEST_UPDATE_STRING_{$i}" );
-			$this->assertEquals( $data, constant( "TEST_UPDATE_STRING_{$i}" ), "TEST_UPDATE_STRING_{$i}" );
+			$name = "TEST_CONST_UPDATE_STRING_{$d}";
+			$this->assertTrue( defined( $name ), $name );
+			$this->assertNotEquals( 'oldvalue', constant( $name ), $name );
+			$this->assertEquals( $data, constant( $name ), $name );
 			// String Variables
-			$this->assertTrue( ( isset( ${"test_update_string_" . $i} ) || is_null( ${"test_update_string_" . $i} ) ), "\$test_update_string_{$i}" );
-			$this->assertNotEquals( 'oldvalue', ${"test_update_string_" . $i}, "test_update_string_{$i}" );
-			$this->assertEquals( $data, ${"test_update_string_" . $i}, "test_update_string_{$i}" );
+			$name = "test_var_update_string_{$d}";
+			$this->assertTrue( ( isset( ${$name} ) || is_null( ${$name} ) ), "\${$name}" );
+			$this->assertNotEquals( 'oldvalue', ${$name}, "\${$name}" );
+			$this->assertEquals( $data, ${$name}, "\${$name}" );
 		}
 
-		$this->assertTrue( defined( 'TEST_UPDATE_ADD_MISSING' ), 'TEST_UPDATE_ADD_MISSING' );
-		$this->assertEquals( 'foo', constant( 'TEST_UPDATE_ADD_MISSING' ), 'TEST_UPDATE_ADD_MISSING' );
+		$this->assertTrue( defined( 'TEST_CONST_UPDATE_ADD_MISSING' ), 'TEST_CONST_UPDATE_ADD_MISSING' );
+		$this->assertEquals( 'foo', constant( 'TEST_CONST_UPDATE_ADD_MISSING' ), 'TEST_CONST_UPDATE_ADD_MISSING' );
 
-		$this->assertTrue( ( isset( $test_update_add_missing ) || is_null( $test_update_add_missing ) ), '$test_update_add_missing' );
-		$this->assertEquals( 'bar', $test_update_add_missing, '$test_update_add_missing' );
+		$this->assertTrue( ( isset( $test_var_update_add_missing ) || is_null( $test_var_update_add_missing ) ), '$test_var_update_add_missing' );
+		$this->assertEquals( 'bar', $test_var_update_add_missing, '$test_var_update_add_missing' );
 	}
 }

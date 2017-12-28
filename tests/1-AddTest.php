@@ -11,16 +11,16 @@ class AddTest extends TestCase
 
 	public static function setUpBeforeClass()
 	{
+		self::$raw_data    = explode( PHP_EOL, file_get_contents( __DIR__ . '/bin/raw-data.txt' ) );
+		self::$string_data = explode( PHP_EOL, file_get_contents( __DIR__ . '/bin/string-data.txt' ) );
+
+		if ( version_compare( PHP_VERSION, '7.0', '>=' ) ) {
+			self::$raw_data = array_merge( self::$raw_data, explode( PHP_EOL, file_get_contents( __DIR__ . '/bin/raw-data-extra.txt' ) ) );
+		}
+
 		self::$test_config_path = __DIR__ . '/wp-config-test-add.php';
 		copy( __DIR__ . '/bin/wp-config-sample.php', self::$test_config_path );
 		self::$config_transformer = new WPConfigTransformer( self::$test_config_path );
-
-		self::$raw_data    = explode( "\n", file_get_contents( __DIR__ . '/bin/raw-data.txt' ) );
-		self::$string_data = explode( "\n", file_get_contents( __DIR__ . '/bin/string-data.txt' ) );
-
-		if ( version_compare( PHP_VERSION, '7.0', '>=' ) ) {
-			self::$raw_data = array_merge( self::$raw_data, explode( "\n", file_get_contents( __DIR__ . '/bin/raw-data-extra.txt' ) ) );
-		}
 	}
 
 	public static function tearDownAfterClass()
@@ -30,33 +30,37 @@ class AddTest extends TestCase
 
 	public function testAddRawConstants()
 	{
-		foreach ( self::$raw_data as $i => $data ) {
-			$this->assertTrue( self::$config_transformer->add( 'constant', "TEST_ADD_RAW_{$i}", $data, [ 'raw' => true ] ) );
-			$this->assertTrue( self::$config_transformer->exists( 'constant', "TEST_ADD_RAW_{$i}" ) );
+		foreach ( self::$raw_data as $d => $data ) {
+			$name = "TEST_CONST_ADD_RAW_{$d}";
+			$this->assertTrue( self::$config_transformer->add( 'constant', $name, $data, [ 'raw' => true ] ), $name );
+			$this->assertTrue( self::$config_transformer->exists( 'constant', $name ), $name );
 		}
 	}
 
 	public function testAddStringConstants()
 	{
-		foreach ( self::$string_data as $i => $data ) {
-			$this->assertTrue( self::$config_transformer->add( 'constant', "TEST_ADD_STRING_{$i}", $data ) );
-			$this->assertTrue( self::$config_transformer->exists( 'constant', "TEST_ADD_STRING_{$i}" ) );
+		foreach ( self::$string_data as $d => $data ) {
+			$name = "TEST_CONST_ADD_STRING_{$d}";
+			$this->assertTrue( self::$config_transformer->add( 'constant', $name, $data ), $name );
+			$this->assertTrue( self::$config_transformer->exists( 'constant', $name ), $name );
 		}
 	}
 
 	public function testAddRawVariables()
 	{
-		foreach ( self::$raw_data as $i => $data ) {
-			$this->assertTrue( self::$config_transformer->add( 'variable', "test_add_raw_{$i}", $data, [ 'raw' => true ] ) );
-			$this->assertTrue( self::$config_transformer->exists( 'variable', "test_add_raw_{$i}" ) );
+		foreach ( self::$raw_data as $d => $data ) {
+			$name = "test_var_add_raw_{$d}";
+			$this->assertTrue( self::$config_transformer->add( 'variable', $name, $data, [ 'raw' => true ] ), "\${$name}" );
+			$this->assertTrue( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
 		}
 	}
 
 	public function testAddStringVariables()
 	{
-		foreach ( self::$string_data as $i => $data ) {
-			$this->assertTrue( self::$config_transformer->add( 'variable', "test_add_string_{$i}", $data ) );
-			$this->assertTrue( self::$config_transformer->exists( 'variable', "test_add_string_{$i}" ) );
+		foreach ( self::$string_data as $d => $data ) {
+			$name = "test_var_add_string_{$d}";
+			$this->assertTrue( self::$config_transformer->add( 'variable', $name, $data ), "\${$name}" );
+			$this->assertTrue( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
 		}
 	}
 
@@ -64,39 +68,44 @@ class AddTest extends TestCase
 	{
 		require_once self::$test_config_path;
 
-		foreach ( self::$raw_data as $i => $data ) {
-			// Convert string to a real value.
-			eval( "\$data = $data;" );
+		foreach ( self::$raw_data as $d => $data ) {
+			eval( "\$data = $data;" ); // Convert string to a real value.
 			// Raw Constants
-			$this->assertTrue( defined( "TEST_ADD_RAW_{$i}" ), "TEST_ADD_RAW_{$i}" );
-			$this->assertEquals( $data, constant( "TEST_ADD_RAW_{$i}" ), "TEST_ADD_RAW_{$i}" );
+			$name = "TEST_CONST_ADD_RAW_{$d}";
+			$this->assertTrue( defined( $name ), $name );
+			$this->assertEquals( $data, constant( $name ), $name );
 			// Raw Variables
-			$this->assertTrue( ( isset( ${"test_add_raw_" . $i} ) || is_null( ${"test_add_raw_" . $i} ) ), "\$test_add_raw_{$i}" );
-			$this->assertEquals( $data, ${"test_add_raw_" . $i}, "test_add_raw_{$i}" );
+			$name = "test_var_add_raw_{$d}";
+			$this->assertTrue( ( isset( ${$name} ) || is_null( ${$name} ) ), "\${$name}" );
+			$this->assertEquals( $data, ${$name}, "\${$name}" );
 		}
 
-		foreach ( self::$string_data as $i => $data ) {
+		foreach ( self::$string_data as $d => $data ) {
 			// String Constants
-			$this->assertTrue( defined( "TEST_ADD_STRING_{$i}" ), "TEST_ADD_STRING_{$i}" );
-			$this->assertEquals( $data, constant( "TEST_ADD_STRING_{$i}" ), "TEST_ADD_STRING_{$i}" );
+			$name = "TEST_CONST_ADD_STRING_{$d}";
+			$this->assertTrue( defined( $name ), $name );
+			$this->assertEquals( $data, constant( $name ), $name );
 			// String Variables
-			$this->assertTrue( ( isset( ${"test_add_string_" . $i} ) || is_null( ${"test_add_string_" . $i} ) ), "\$test_add_string_{$i}" );
-			$this->assertEquals( $data, ${"test_add_string_" . $i}, "test_add_string_{$i}" );
+			$name = "test_var_add_string_{$d}";
+			$this->assertTrue( ( isset( ${$name} ) || is_null( ${$name} ) ), "\${$name}" );
+			$this->assertEquals( $data, ${$name}, "\${$name}" );
 		}
 	}
 
 	public function testConstantNoAddIfExists()
 	{
-		$this->assertTrue( self::$config_transformer->add( 'constant', 'TEST_ADD_EXISTS', 'foo' ) );
-		$this->assertTrue( self::$config_transformer->exists( 'constant', 'TEST_ADD_EXISTS' ) );
-		$this->assertFalse( self::$config_transformer->add( 'constant', 'TEST_ADD_EXISTS', 'bar' ) );
+		$name = 'TEST_CONST_ADD_EXISTS';
+		$this->assertTrue( self::$config_transformer->add( 'constant', $name, 'foo' ), $name );
+		$this->assertTrue( self::$config_transformer->exists( 'constant', $name ), $name );
+		$this->assertFalse( self::$config_transformer->add( 'constant', $name, 'bar' ), $name );
 	}
 
 	public function testVariableNoAddIfExists()
 	{
-		$this->assertTrue( self::$config_transformer->add( 'variable', 'test_add_exists', 'foo' ) );
-		$this->assertTrue( self::$config_transformer->exists( 'variable', 'test_add_exists' ) );
-		$this->assertFalse( self::$config_transformer->add( 'variable', 'test_add_exists', 'bar' ) );
+		$name = 'test_var_add_exists';
+		$this->assertTrue( self::$config_transformer->add( 'variable', $name, 'foo' ), "\${$name}" );
+		$this->assertTrue( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
+		$this->assertFalse( self::$config_transformer->add( 'variable', $name, 'bar' ), "\${$name}" );
 	}
 
 	/**
@@ -105,6 +114,6 @@ class AddTest extends TestCase
 	 */
 	public function testNoPlacementTarget()
 	{
-		self::$config_transformer->add( 'constant', 'TEST_ADD_NO_TARGET', 'foo', [ 'target' => 'nothingtoseehere' ] );
+		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_NO_TARGET', 'foo', [ 'target' => 'nothingtoseehere' ] );
 	}
 }
