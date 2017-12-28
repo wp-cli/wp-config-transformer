@@ -8,8 +8,5 @@
             "name": "Frankie Jarrett",
             "email": "fjarrett@gmail.com"
         }
-    ],
-    "require-dev": {
-        "phpunit/phpunit": "^6.5"
-    }
+    ]
 }
