@@ -112,8 +112,17 @@ class AddTest extends TestCase
 	 * @expectedException        Exception
 	 * @expectedExceptionMessage Unable to locate placement target.
 	 */
-	public function testNoPlacementTarget()
+	public function testConstantNoPlacementTarget()
 	{
 		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_NO_TARGET', 'foo', [ 'target' => 'nothingtoseehere' ] );
+	}
+
+	/**
+	 * @expectedException        Exception
+	 * @expectedExceptionMessage Unable to locate placement target.
+	 */
+	public function testVariableNoPlacementTarget()
+	{
+		self::$config_transformer->add( 'variable', 'test_var_add_no_target', 'foo', [ 'target' => 'nothingtoseehere' ] );
 	}
 }
