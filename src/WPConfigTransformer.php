@@ -191,7 +191,7 @@ class WPConfigTransformer {
 	}
 
 	/**
-	 *
+	 * Format a string for config value output.
 	 *
 	 * @throws Exception When a raw value is requested for an empty string.
 	 *

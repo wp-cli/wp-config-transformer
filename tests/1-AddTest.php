@@ -28,7 +28,7 @@ class AddTest extends TestCase
 		unlink( self::$test_config_path );
 	}
 
-	public function testAddRawConstants()
+	public function testRawConstants()
 	{
 		foreach ( self::$raw_data as $d => $data ) {
 			$name = "TEST_CONST_ADD_RAW_{$d}";
@@ -37,7 +37,7 @@ class AddTest extends TestCase
 		}
 	}
 
-	public function testAddStringConstants()
+	public function testStringConstants()
 	{
 		foreach ( self::$string_data as $d => $data ) {
 			$name = "TEST_CONST_ADD_STRING_{$d}";
@@ -46,7 +46,7 @@ class AddTest extends TestCase
 		}
 	}
 
-	public function testAddRawVariables()
+	public function testRawVariables()
 	{
 		foreach ( self::$raw_data as $d => $data ) {
 			$name = "test_var_add_raw_{$d}";
@@ -55,40 +55,12 @@ class AddTest extends TestCase
 		}
 	}
 
-	public function testAddStringVariables()
+	public function testStringVariables()
 	{
 		foreach ( self::$string_data as $d => $data ) {
 			$name = "test_var_add_string_{$d}";
 			$this->assertTrue( self::$config_transformer->add( 'variable', $name, $data ), "\${$name}" );
 			$this->assertTrue( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
-		}
-	}
-
-	public function testConfigValues()
-	{
-		require_once self::$test_config_path;
-
-		foreach ( self::$raw_data as $d => $data ) {
-			eval( "\$data = $data;" ); // Convert string to a real value.
-			// Raw Constants
-			$name = "TEST_CONST_ADD_RAW_{$d}";
-			$this->assertTrue( defined( $name ), $name );
-			$this->assertEquals( $data, constant( $name ), $name );
-			// Raw Variables
-			$name = "test_var_add_raw_{$d}";
-			$this->assertTrue( ( isset( ${$name} ) || is_null( ${$name} ) ), "\${$name}" );
-			$this->assertEquals( $data, ${$name}, "\${$name}" );
-		}
-
-		foreach ( self::$string_data as $d => $data ) {
-			// String Constants
-			$name = "TEST_CONST_ADD_STRING_{$d}";
-			$this->assertTrue( defined( $name ), $name );
-			$this->assertEquals( $data, constant( $name ), $name );
-			// String Variables
-			$name = "test_var_add_string_{$d}";
-			$this->assertTrue( ( isset( ${$name} ) || is_null( ${$name} ) ), "\${$name}" );
-			$this->assertEquals( $data, ${$name}, "\${$name}" );
 		}
 	}
 
@@ -130,7 +102,7 @@ class AddTest extends TestCase
 	 * @expectedException        Exception
 	 * @expectedExceptionMessage Config value must be a string.
 	 */
-	public function testConstantAddNonString()
+	public function testConstantNonString()
 	{
 		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_NON_STRING', true );
 	}
@@ -139,8 +111,78 @@ class AddTest extends TestCase
 	 * @expectedException        Exception
 	 * @expectedExceptionMessage Config value must be a string.
 	 */
-	public function testVariableAddNonString()
+	public function testVariableNonString()
 	{
 		self::$config_transformer->add( 'variable', 'test_var_add_non_string', true );
+	}
+
+	/**
+	 * @expectedException        Exception
+	 * @expectedExceptionMessage Raw value for empty string not supported.
+	 */
+	public function testConstantEmptyStringRaw()
+	{
+		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_EMPTY_STRING_RAW', '', [ 'raw' => true ] );
+	}
+
+	/**
+	 * @expectedException        Exception
+	 * @expectedExceptionMessage Raw value for empty string not supported.
+	 */
+	public function testVariableEmptyStringRaw()
+	{
+		self::$config_transformer->add( 'variable', 'test_var_add_empty_string_raw', '', [ 'raw' => true ] );
+	}
+
+	/**
+	 * @expectedException        Exception
+	 * @expectedExceptionMessage Raw value for empty string not supported.
+	 */
+	public function testConstantWhitespaceStringRaw()
+	{
+		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_WHITESPACE_STRING_RAW', '   ', [ 'raw' => true ] );
+	}
+
+	/**
+	 * @expectedException        Exception
+	 * @expectedExceptionMessage Raw value for empty string not supported.
+	 */
+	public function testVariableWhitespaceStringRaw()
+	{
+		self::$config_transformer->add( 'variable', 'test_var_add_whitespace_string_raw', '   ', [ 'raw' => true ] );
+	}
+
+	public function testConfigValues()
+	{
+		require_once self::$test_config_path;
+
+		foreach ( self::$raw_data as $d => $data ) {
+			eval( "\$data = $data;" ); // Convert string to a real value.
+			// Raw Constants
+			$name = "TEST_CONST_ADD_RAW_{$d}";
+			$this->assertTrue( defined( $name ), $name );
+			$this->assertEquals( $data, constant( $name ), $name );
+			// Raw Variables
+			$name = "test_var_add_raw_{$d}";
+			$this->assertTrue( ( isset( ${$name} ) || is_null( ${$name} ) ), "\${$name}" );
+			$this->assertEquals( $data, ${$name}, "\${$name}" );
+		}
+
+		foreach ( self::$string_data as $d => $data ) {
+			// String Constants
+			$name = "TEST_CONST_ADD_STRING_{$d}";
+			$this->assertTrue( defined( $name ), $name );
+			$this->assertEquals( $data, constant( $name ), $name );
+			// String Variables
+			$name = "test_var_add_string_{$d}";
+			$this->assertTrue( ( isset( ${$name} ) || is_null( ${$name} ) ), "\${$name}" );
+			$this->assertEquals( $data, ${$name}, "\${$name}" );
+		}
+
+		$this->assertTrue( defined( 'TEST_CONST_ADD_EXISTS' ), 'TEST_CONST_ADD_EXISTS' );
+		$this->assertEquals( 'foo', constant( 'TEST_CONST_ADD_EXISTS' ), 'TEST_CONST_ADD_EXISTS' );
+
+		$this->assertTrue( ( isset( $test_var_add_exists ) || is_null( $test_var_add_exists ) ), '$test_var_update_add_missing' );
+		$this->assertEquals( 'foo', $test_var_add_exists, '$test_var_add_exists' );
 	}
 }
