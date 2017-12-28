@@ -10,12 +10,5 @@ FALSE
 0.1
 1.10
 2.202
-array()
-ARRAY()
-[]
-array( 'foo' )
-ARRAY( 'bar' )
-[ 'baz' ]
-array( 'foo', array( 'bar' ) )
 dirname( __FILE__ ) . '/some/path/'
 ( 0644 & ~ umask() )

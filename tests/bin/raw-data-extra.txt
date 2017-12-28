@@ -1,0 +1,7 @@
+array()
+ARRAY()
+[]
+array( 'foo' )
+ARRAY( 'bar' )
+[ 'baz' ]
+array( 'foo', array( 'bar' ) )

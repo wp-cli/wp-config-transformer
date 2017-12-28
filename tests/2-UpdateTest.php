@@ -19,6 +19,10 @@ class UpdateTest extends TestCase
 
 		self::$raw_data    = explode( "\n", file_get_contents( __DIR__ . '/bin/raw-data.txt' ) );
 		self::$string_data = explode( "\n", file_get_contents( __DIR__ . '/bin/string-data.txt' ) );
+
+		if ( version_compare( PHP_VERSION, '7.0', '>=' ) ) {
+			self::$raw_data = array_merge( self::$raw_data, explode( "\n", file_get_contents( __DIR__ . '/bin/raw-data-extra.txt' ) ) );
+		}
 	}
 
 	public static function tearDownAfterClass()
