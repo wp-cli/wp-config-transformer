@@ -2,7 +2,18 @@ sudo: false
 
 language: php
 
+notifications:
+  email:
+    on_success: never
+    on_failure: change
+
 cache:
   directories:
   - vendor
   - $HOME/.composer/cache
+
+before_install:
+  - phpenv config-rm xdebug.ini
+
+before_script:
+  - composer install
