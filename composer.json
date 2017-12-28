@@ -8,5 +8,8 @@
             "name": "Frankie Jarrett",
             "email": "fjarrett@gmail.com"
         }
-    ]
+    ],
+    "autoload": {
+        "files": [ "src/WPConfigTransformer.php" ]
+    }
 }
