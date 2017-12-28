@@ -99,7 +99,7 @@ class WPConfigTransformer {
 		$defaults = array(
 			'raw'       => false, // Display value in raw format without quotes.
 			'target'    => "/* That's all, stop editing!", // Config placement target string.
-			'buffer'    => "\n\n", // Buffer between config definition and target string.
+			'buffer'    => PHP_EOL . PHP_EOL, // Buffer between config definition and target string.
 			'placement' => 'before', // Config placement direction (insert before or after).
 		);
 
