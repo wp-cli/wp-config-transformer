@@ -23,7 +23,7 @@ class UpdateTest extends TestCase
 
 	public static function tearDownAfterClass()
 	{
-//		unlink( self::$test_config_path );
+		unlink( self::$test_config_path );
 	}
 
 	public function testUpdateRawConstants()
