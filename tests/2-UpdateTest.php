@@ -141,4 +141,26 @@ class UpdateTest extends TestCase
 		$this->assertTrue( ( isset( $test_var_update_add_missing ) || is_null( $test_var_update_add_missing ) ), '$test_var_update_add_missing' );
 		$this->assertEquals( 'bar', $test_var_update_add_missing, '$test_var_update_add_missing' );
 	}
+
+	/**
+	 * @expectedException        Exception
+	 * @expectedExceptionMessage Config value must be a string.
+	 */
+	public function testConstantUpdateNonString()
+	{
+		$name = 'TEST_CONST_UPDATE_NON_STRING';
+		$this->assertTrue( self::$config_transformer->add( 'constant', $name, 'foo', [ 'target' => '<?php', 'placement' => 'after' ] ), $name );
+		self::$config_transformer->update( 'constant', $name, true );
+	}
+
+	/**
+	 * @expectedException        Exception
+	 * @expectedExceptionMessage Config value must be a string.
+	 */
+	public function testVariableUpdateNonString()
+	{
+		$name = 'test_var_update_non_string';
+		$this->assertTrue( self::$config_transformer->add( 'variable', $name, 'bar', [ 'target' => '<?php', 'placement' => 'after' ] ), "\${$name}" );
+		self::$config_transformer->update( 'variable', $name, true );
+	}
 }

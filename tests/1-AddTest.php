@@ -125,4 +125,22 @@ class AddTest extends TestCase
 	{
 		self::$config_transformer->add( 'variable', 'test_var_add_no_target', 'foo', [ 'target' => 'nothingtoseehere' ] );
 	}
+
+	/**
+	 * @expectedException        Exception
+	 * @expectedExceptionMessage Config value must be a string.
+	 */
+	public function testConstantAddNonString()
+	{
+		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_NON_STRING', true );
+	}
+
+	/**
+	 * @expectedException        Exception
+	 * @expectedExceptionMessage Config value must be a string.
+	 */
+	public function testVariableAddNonString()
+	{
+		self::$config_transformer->add( 'variable', 'test_var_add_non_string', true );
+	}
 }
