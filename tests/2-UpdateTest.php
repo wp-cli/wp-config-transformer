@@ -88,6 +88,22 @@ class UpdateTest extends TestCase
 		$this->assertTrue( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
 	}
 
+	public function testConstantNoAddIfMissing()
+	{
+		$name = 'TEST_CONST_UPDATE_NO_ADD_MISSING';
+		$this->assertFalse( self::$config_transformer->exists( 'constant', $name ), $name );
+		$this->assertFalse( self::$config_transformer->update( 'constant', $name, 'foo', [ 'target' => '<?php', 'placement' => 'after', 'add' => false ] ), $name );
+		$this->assertFalse( self::$config_transformer->exists( 'constant', $name ), $name );
+	}
+
+	public function testVariableNoAddIfMissing()
+	{
+		$name = 'test_var_update_no_add_missing';
+		$this->assertFalse( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
+		$this->assertFalse( self::$config_transformer->update( 'variable', $name, 'bar', [ 'target' => '<?php', 'placement' => 'after', 'add' => false ] ), "\${$name}" );
+		$this->assertFalse( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
+	}
+
 	public function testConfigValues()
 	{
 		require_once self::$test_config_path;

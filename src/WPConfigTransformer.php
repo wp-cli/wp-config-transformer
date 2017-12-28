@@ -138,19 +138,22 @@ class WPConfigTransformer {
 			throw new Exception( 'Config value must be a string.' );
 		}
 
-		if ( ! $this->exists( $type, $name ) ) {
-			return $this->add( $type, $name, $value, $options );
-		}
-
 		$defaults = array(
+			'add'       => true, // Add the config if missing.
 			'raw'       => false, // Display value in raw format without quotes.
 			'normalize' => false, // Normalize config output using WP Coding Standards.
 		);
 
-		list( $raw, $normalize ) = array_values( array_merge( $defaults, $options ) );
+		list( $add, $raw, $normalize ) = array_values( array_merge( $defaults, $options ) );
 
+		$add       = (bool) $add;
 		$raw       = (bool) $raw;
 		$normalize = (bool) $normalize;
+
+		if ( ! $this->exists( $type, $name ) ) {
+			return ( $add ) ? $this->add( $type, $name, $value, $options ) : false;
+		}
+
 		$old_src   = $this->wp_configs[ $type ][ $name ]['src'];
 		$old_value = $this->wp_configs[ $type ][ $name ]['value'];
 		$new_value = $this->format_value( $value, $raw );
