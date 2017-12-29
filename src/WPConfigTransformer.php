@@ -13,7 +13,7 @@ class WPConfigTransformer {
 	protected $wp_config_path;
 
 	/**
-	 * Original contents of the wp-config.php file.
+	 * Original source of the wp-config.php file.
 	 *
 	 * @var string
 	 */
@@ -47,7 +47,7 @@ class WPConfigTransformer {
 	}
 
 	/**
-	 * Check whether a config exists in the wp-config.php file.
+	 * Check if a config exists in the wp-config.php file.
 	 *
 	 * @throws Exception If the wp-config.php file is empty.
 	 * @throws Exception If the requested config type is invalid.
@@ -191,7 +191,7 @@ class WPConfigTransformer {
 	}
 
 	/**
-	 * Format a string for config value output.
+	 * Apply formatting to a config value.
 	 *
 	 * @throws Exception When a raw value is requested for an empty string.
 	 *
@@ -232,7 +232,7 @@ class WPConfigTransformer {
 	}
 
 	/**
-	 * Parse config source and return an array.
+	 * Parse the config source.
 	 *
 	 * @param string $src Config file source.
 	 *
@@ -279,7 +279,7 @@ class WPConfigTransformer {
 	}
 
 	/**
-	 * Save the wp-config.php file with new contents.
+	 * Save the wp-config.php file with new content.
 	 *
 	 * @throws Exception If the config file content provided is empty.
 	 * @throws Exception If there is a failure when saving the wp-config.php file.
