@@ -28,7 +28,7 @@ $config_transformer = new WPConfigTransformer( '/path/to/wp-config.php' );
 ### Edit constants
 
 ```php
-$config_transformer->update( 'constant', 'WP_DEBUG', 'true', [ 'raw' => true ] );
+$config_transformer->update( 'constant', 'WP_DEBUG', 'true', array( 'raw' => true ) );
 $config_transformer->add( 'constant', 'MY_SPECIAL_CONFIG', 'foo' );
 $config_transformer->remove( 'constant', 'MY_SPECIAL_CONFIG' );
 ```
@@ -72,7 +72,7 @@ Let's reconsider a poorly-formatted example:
 This time running:
 
 ```php
-$config_transformer->update( 'constant', 'WP_DEBUG', 'true', [ 'raw' => true, 'normalize' => true ] );
+$config_transformer->update( 'constant', 'WP_DEBUG', 'true', array( 'raw' => true, 'normalize' => true ) );
 ```
 
 Now we will get an output of:
@@ -88,7 +88,7 @@ Noice!
 Suppose you want to change your `ABSPATH` config _(gasp!)_. To do that, we can run:
 
 ```php
-$config_transformer->update( 'constant', 'ABSPATH', "dirname( __FILE__ ) . '/somewhere/else/'", [ 'raw' => true ] );
+$config_transformer->update( 'constant', 'ABSPATH', "dirname( __FILE__ ) . '/somewhere/else/'", array( 'raw' => true ) );
 ```
 
 The `raw` option means that instead of placing the value inside the config as a string `"dirname( __FILE__ ) . '/somewhere/else/'"` it will become unquoted (and executable) syntax `dirname( __FILE__ ) . '/somewhere/else/'`.
@@ -98,7 +98,7 @@ The `raw` option means that instead of placing the value inside the config as a 
 TODO
 
 ```php
-$config_transformer->update( 'constant', 'FOO', 'bar', [ 'target' => '/** Absolute path to the WordPress directory', 'placement' => 'before', 'buffer' => PHP_EOL . PHP_EOL ] );
+$config_transformer->update( 'constant', 'FOO', 'bar', array( 'target' => '/** Absolute path to the WordPress directory' ) ); // Default
 ```
 
 ### Target placement
@@ -106,8 +106,8 @@ $config_transformer->update( 'constant', 'FOO', 'bar', [ 'target' => '/** Absolu
 By default, new configs will be placed before the target string.
 
 ```php
-$config_transformer->update( 'constant', 'FOO', 'bar', [ 'placement' => 'before' ] ); // Default
-$config_transformer->update( 'constant', 'BAZ', 'qux', [ 'placement' => 'after' ] );
+$config_transformer->update( 'constant', 'FOO', 'bar', array( 'placement' => 'before' ) ); // Default
+$config_transformer->update( 'constant', 'BAZ', 'qux', array( 'placement' => 'after' ) );
 ```
 
 ### Target buffer
@@ -115,8 +115,8 @@ $config_transformer->update( 'constant', 'BAZ', 'qux', [ 'placement' => 'after' 
 By default, the buffer between a new config and its target string is two EOL (double-space).
 
 ```php
-$config_transformer->update( 'constant', 'FOO', 'bar', [ 'buffer' => PHP_EOL . PHP_EOL ] ); // Default
-$config_transformer->update( 'constant', 'FOO', 'bar', [ 'buffer' => PHP_EOL ] );
+$config_transformer->update( 'constant', 'FOO', 'bar', array( 'buffer' => PHP_EOL . PHP_EOL ) ); // Default
+$config_transformer->update( 'constant', 'FOO', 'bar', array( 'buffer' => PHP_EOL ) );
 ```
 
 ### Add if missing
@@ -124,15 +124,15 @@ $config_transformer->update( 'constant', 'FOO', 'bar', [ 'buffer' => PHP_EOL ] )
 By default, when attempting to update a config that doesn't exist, one will be added. This behavior can be overridden by specifying the `add` option and setting it to `false`.
 
 ```php
-$config_transformer->update( 'constant', 'FOO', 'bar', [ 'add' => true ] ); // Default
-$config_transformer->update( 'constant', 'FOO', 'bar', [ 'add' => false ] );
+$config_transformer->update( 'constant', 'FOO', 'bar', array( 'add' => true ) ); // Default
+$config_transformer->update( 'constant', 'FOO', 'bar', array( 'add' => false ) );
 ```
 
 If the constant `FOO` exists, it will be updated in-place. And if not, the update will return `false`:
 
 ```php
 $config_transformer->exists( 'constant', 'FOO' ); // Returns false
-$config_transformer->update( 'constant', 'FOO', 'bar', [ 'add' => false ] ); // Returns false
+$config_transformer->update( 'constant', 'FOO', 'bar', array( 'add' => false ) ); // Returns false
 ```
 
 ## Option forwarding
@@ -142,7 +142,7 @@ Any option supported by the `add()` method can also be passed through the `updat
 For example, you want to update the `FOO` constant in-place if it exists, otherwise it should be added to a special location:
 
 ```php
-$config_transformer->update( 'constant', 'FOO', 'bar', [ 'target' => '/** My special location' ] );
+$config_transformer->update( 'constant', 'FOO', 'bar', array( 'target' => '/** My special location' ) );
 ```
 
 Which has the same effect as the long-form logic:
@@ -151,7 +151,7 @@ Which has the same effect as the long-form logic:
 if ( $config_transformer->exists( 'constant', 'FOO' ) ) {
 	$config_transformer->update( 'constant', 'FOO', 'bar' );
 } else {
-	$config_transformer->add( 'constant', 'FOO', 'bar', [ 'target' => '/** My special area' ] );
+	$config_transformer->add( 'constant', 'FOO', 'bar', array( 'target' => '/** My special area' ) );
 }
 ```
 
@@ -187,7 +187,7 @@ Consider the following horrifically-valid PHP block, that also happens to be usi
 The "edit in place" strategy means that running:
 
 ```php
-$config_transformer->update( 'constant', 'WP_DEBUG', 'true', [ 'raw' => true ] );
+$config_transformer->update( 'constant', 'WP_DEBUG', 'true', array( 'raw' => true ) );
 ```
 
 Will give us a result that safely changes _only_ the value, leaving the formatting and additional argument(s) unscathed:

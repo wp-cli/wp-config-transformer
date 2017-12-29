@@ -6,8 +6,8 @@ class AddRemoveTest extends TestCase
 {
 	protected static $test_config_path;
 	protected static $config_transformer;
-	protected static $raw_data = [];
-	protected static $string_data = [];
+	protected static $raw_data = array();
+	protected static $string_data = array();
 
 	public static function setUpBeforeClass()
 	{
@@ -32,7 +32,7 @@ class AddRemoveTest extends TestCase
 	{
 		foreach ( self::$raw_data as $d => $data ) {
 			$name = "TEST_CONST_ADD_RAW_{$d}";
-			$this->assertTrue( self::$config_transformer->add( 'constant', $name, $data, [ 'raw' => true ] ), $name );
+			$this->assertTrue( self::$config_transformer->add( 'constant', $name, $data, array( 'raw' => true ) ), $name );
 			$this->assertTrue( self::$config_transformer->exists( 'constant', $name ), $name );
 		}
 	}
@@ -50,7 +50,7 @@ class AddRemoveTest extends TestCase
 	{
 		foreach ( self::$raw_data as $d => $data ) {
 			$name = "test_var_add_raw_{$d}";
-			$this->assertTrue( self::$config_transformer->add( 'variable', $name, $data, [ 'raw' => true ] ), "\${$name}" );
+			$this->assertTrue( self::$config_transformer->add( 'variable', $name, $data, array( 'raw' => true ) ), "\${$name}" );
 			$this->assertTrue( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
 		}
 	}
@@ -160,7 +160,7 @@ class AddRemoveTest extends TestCase
 	 */
 	public function testAddConstantNoPlacementTarget()
 	{
-		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_NO_TARGET', 'foo', [ 'target' => 'nothingtoseehere' ] );
+		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_NO_TARGET', 'foo', array( 'target' => 'nothingtoseehere' ) );
 	}
 
 	/**
@@ -169,7 +169,7 @@ class AddRemoveTest extends TestCase
 	 */
 	public function testAddVariableNoPlacementTarget()
 	{
-		self::$config_transformer->add( 'variable', 'test_var_add_no_target', 'foo', [ 'target' => 'nothingtoseehere' ] );
+		self::$config_transformer->add( 'variable', 'test_var_add_no_target', 'foo', array( 'target' => 'nothingtoseehere' ) );
 	}
 
 	/**
@@ -196,7 +196,7 @@ class AddRemoveTest extends TestCase
 	 */
 	public function testAddConstantEmptyStringRaw()
 	{
-		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_EMPTY_STRING_RAW', '', [ 'raw' => true ] );
+		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_EMPTY_STRING_RAW', '', array( 'raw' => true ) );
 	}
 
 	/**
@@ -205,7 +205,7 @@ class AddRemoveTest extends TestCase
 	 */
 	public function testAddVariableEmptyStringRaw()
 	{
-		self::$config_transformer->add( 'variable', 'test_var_add_empty_string_raw', '', [ 'raw' => true ] );
+		self::$config_transformer->add( 'variable', 'test_var_add_empty_string_raw', '', array( 'raw' => true ) );
 	}
 
 	/**
@@ -214,7 +214,7 @@ class AddRemoveTest extends TestCase
 	 */
 	public function testAddConstantWhitespaceStringRaw()
 	{
-		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_WHITESPACE_STRING_RAW', '   ', [ 'raw' => true ] );
+		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_WHITESPACE_STRING_RAW', '   ', array( 'raw' => true ) );
 	}
 
 	/**
@@ -223,6 +223,6 @@ class AddRemoveTest extends TestCase
 	 */
 	public function testAddVariableWhitespaceStringRaw()
 	{
-		self::$config_transformer->add( 'variable', 'test_var_add_whitespace_string_raw', '   ', [ 'raw' => true ] );
+		self::$config_transformer->add( 'variable', 'test_var_add_whitespace_string_raw', '   ', array( 'raw' => true ) );
 	}
 }

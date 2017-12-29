@@ -6,9 +6,9 @@ class BlockTest extends TestCase
 {
 	protected static $test_config_path;
 	protected static $config_transformer;
-	protected static $raw_data = [];
-	protected static $string_data = [];
-	protected static $block_data = [];
+	protected static $raw_data = array();
+	protected static $string_data = array();
+	protected static $block_data = array();
 
 	public static function setUpBeforeClass()
 	{
@@ -65,7 +65,7 @@ class BlockTest extends TestCase
 			foreach ( self::$raw_data as $d => $data ) {
 				$name = "TEST_CONST_BLOCK_{$b}_RAW_{$d}";
 				$this->assertTrue( self::$config_transformer->exists( 'constant', $name ), $name );
-				$this->assertTrue( self::$config_transformer->update( 'constant', $name, $data, [ 'raw' => true ] ), $name );
+				$this->assertTrue( self::$config_transformer->update( 'constant', $name, $data, array( 'raw' => true ) ), $name );
 			}
 		}
 	}
@@ -87,7 +87,7 @@ class BlockTest extends TestCase
 			foreach ( self::$raw_data as $d => $data ) {
 				$name = "test_var_block_{$b}_raw_{$d}";
 				$this->assertTrue( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
-				$this->assertTrue( self::$config_transformer->update( 'variable', $name, $data, [ 'raw' => true ] ), "\${$name}" );
+				$this->assertTrue( self::$config_transformer->update( 'variable', $name, $data, array( 'raw' => true ) ), "\${$name}" );
 			}
 		}
 	}

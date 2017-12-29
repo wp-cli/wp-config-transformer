@@ -8,6 +8,7 @@ notifications:
     on_failure: change
 
 php:
+  - 5.3
   - 5.4
   - 5.5
   - 5.6

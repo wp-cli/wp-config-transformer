@@ -6,8 +6,8 @@ class UpdateTest extends TestCase
 {
 	protected static $test_config_path;
 	protected static $config_transformer;
-	protected static $raw_data = [];
-	protected static $string_data = [];
+	protected static $raw_data = array();
+	protected static $string_data = array();
 
 	public static function setUpBeforeClass()
 	{
@@ -19,7 +19,7 @@ class UpdateTest extends TestCase
 		}
 
 		self::$test_config_path = __DIR__ . '/wp-config-test-update.php';
-		file_put_contents( self::$test_config_path, "<?php\n\n" );
+		file_put_contents( self::$test_config_path, '<?php' . PHP_EOL . PHP_EOL );
 		self::$config_transformer = new WPConfigTransformer( self::$test_config_path );
 	}
 
@@ -33,9 +33,9 @@ class UpdateTest extends TestCase
 		foreach ( self::$raw_data as $d => $data ) {
 			$name = "TEST_CONST_UPDATE_RAW_{$d}";
 			$this->assertFalse( self::$config_transformer->exists( 'constant', $name ), $name );
-			$this->assertTrue( self::$config_transformer->add( 'constant', $name, 'oldvalue', [ 'target' => '<?php', 'placement' => 'after' ] ), $name );
+			$this->assertTrue( self::$config_transformer->add( 'constant', $name, 'oldvalue', array( 'target' => '<?php', 'placement' => 'after' ) ), $name );
 			$this->assertTrue( self::$config_transformer->exists( 'constant', $name ), $name );
-			$this->assertTrue( self::$config_transformer->update( 'constant', $name, $data, [ 'raw' => true ] ), $name );
+			$this->assertTrue( self::$config_transformer->update( 'constant', $name, $data, array( 'raw' => true ) ), $name );
 		}
 	}
 
@@ -44,7 +44,7 @@ class UpdateTest extends TestCase
 		foreach ( self::$string_data as $d => $data ) {
 			$name = "TEST_CONST_UPDATE_STRING_{$d}";
 			$this->assertFalse( self::$config_transformer->exists( 'constant', $name ), $name );
-			$this->assertTrue( self::$config_transformer->add( 'constant', $name, 'oldvalue', [ 'target' => '<?php', 'placement' => 'after' ] ), $name );
+			$this->assertTrue( self::$config_transformer->add( 'constant', $name, 'oldvalue', array( 'target' => '<?php', 'placement' => 'after' ) ), $name );
 			$this->assertTrue( self::$config_transformer->exists( 'constant', $name ), $name );
 			$this->assertTrue( self::$config_transformer->update( 'constant', $name, $data ), $name );
 		}
@@ -55,9 +55,9 @@ class UpdateTest extends TestCase
 		foreach ( self::$raw_data as $d => $data ) {
 			$name = "test_var_update_raw_{$d}";
 			$this->assertFalse( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
-			$this->assertTrue( self::$config_transformer->add( 'variable', $name, 'oldvalue', [ 'target' => '<?php', 'placement' => 'after' ] ), "\${$name}" );
+			$this->assertTrue( self::$config_transformer->add( 'variable', $name, 'oldvalue', array( 'target' => '<?php', 'placement' => 'after' ) ), "\${$name}" );
 			$this->assertTrue( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
-			$this->assertTrue( self::$config_transformer->update( 'variable', $name, $data, [ 'raw' => true ] ), "\${$name}" );
+			$this->assertTrue( self::$config_transformer->update( 'variable', $name, $data, array( 'raw' => true ) ), "\${$name}" );
 		}
 	}
 
@@ -66,7 +66,7 @@ class UpdateTest extends TestCase
 		foreach ( self::$string_data as $d => $data ) {
 			$name = "test_var_update_string_{$d}";
 			$this->assertFalse( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
-			$this->assertTrue( self::$config_transformer->add( 'variable', $name, 'oldvalue', [ 'target' => '<?php', 'placement' => 'after' ] ), "\${$name}" );
+			$this->assertTrue( self::$config_transformer->add( 'variable', $name, 'oldvalue', array( 'target' => '<?php', 'placement' => 'after' ) ), "\${$name}" );
 			$this->assertTrue( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
 			$this->assertTrue( self::$config_transformer->update( 'variable', $name, $data ), "\${$name}" );
 		}
@@ -76,7 +76,7 @@ class UpdateTest extends TestCase
 	{
 		$name = 'TEST_CONST_UPDATE_ADD_MISSING';
 		$this->assertFalse( self::$config_transformer->exists( 'constant', $name ), $name );
-		$this->assertTrue( self::$config_transformer->update( 'constant', $name, 'foo', [ 'target' => '<?php', 'placement' => 'after' ] ), $name );
+		$this->assertTrue( self::$config_transformer->update( 'constant', $name, 'foo', array( 'target' => '<?php', 'placement' => 'after' ) ), $name );
 		$this->assertTrue( self::$config_transformer->exists( 'constant', $name ), $name );
 	}
 
@@ -84,7 +84,7 @@ class UpdateTest extends TestCase
 	{
 		$name = 'test_var_update_add_missing';
 		$this->assertFalse( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
-		$this->assertTrue( self::$config_transformer->update( 'variable', $name, 'bar', [ 'target' => '<?php', 'placement' => 'after' ] ), "\${$name}" );
+		$this->assertTrue( self::$config_transformer->update( 'variable', $name, 'bar', array( 'target' => '<?php', 'placement' => 'after' ) ), "\${$name}" );
 		$this->assertTrue( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
 	}
 
@@ -92,7 +92,7 @@ class UpdateTest extends TestCase
 	{
 		$name = 'TEST_CONST_UPDATE_NO_ADD_MISSING';
 		$this->assertFalse( self::$config_transformer->exists( 'constant', $name ), $name );
-		$this->assertFalse( self::$config_transformer->update( 'constant', $name, 'foo', [ 'target' => '<?php', 'placement' => 'after', 'add' => false ] ), $name );
+		$this->assertFalse( self::$config_transformer->update( 'constant', $name, 'foo', array( 'target' => '<?php', 'placement' => 'after', 'add' => false ) ), $name );
 		$this->assertFalse( self::$config_transformer->exists( 'constant', $name ), $name );
 	}
 
@@ -100,7 +100,7 @@ class UpdateTest extends TestCase
 	{
 		$name = 'test_var_update_no_add_missing';
 		$this->assertFalse( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
-		$this->assertFalse( self::$config_transformer->update( 'variable', $name, 'bar', [ 'target' => '<?php', 'placement' => 'after', 'add' => false ] ), "\${$name}" );
+		$this->assertFalse( self::$config_transformer->update( 'variable', $name, 'bar', array( 'target' => '<?php', 'placement' => 'after', 'add' => false ) ), "\${$name}" );
 		$this->assertFalse( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
 	}
 
@@ -111,7 +111,7 @@ class UpdateTest extends TestCase
 	public function testConstantNonString()
 	{
 		$name = 'TEST_CONST_UPDATE_NON_STRING';
-		$this->assertTrue( self::$config_transformer->add( 'constant', $name, 'foo', [ 'target' => '<?php', 'placement' => 'after' ] ), $name );
+		$this->assertTrue( self::$config_transformer->add( 'constant', $name, 'foo', array( 'target' => '<?php', 'placement' => 'after' ) ), $name );
 		self::$config_transformer->update( 'constant', $name, true );
 	}
 
@@ -122,7 +122,7 @@ class UpdateTest extends TestCase
 	public function testVariableNonString()
 	{
 		$name = 'test_var_update_non_string';
-		$this->assertTrue( self::$config_transformer->add( 'variable', $name, 'bar', [ 'target' => '<?php', 'placement' => 'after' ] ), "\${$name}" );
+		$this->assertTrue( self::$config_transformer->add( 'variable', $name, 'bar', array( 'target' => '<?php', 'placement' => 'after' ) ), "\${$name}" );
 		self::$config_transformer->update( 'variable', $name, true );
 	}
 
@@ -133,8 +133,8 @@ class UpdateTest extends TestCase
 	public function testConstantEmptyStringRaw()
 	{
 		$name = 'TEST_CONST_UPDATE_EMPTY_STRING_RAW';
-		$this->assertTrue( self::$config_transformer->add( 'constant', $name, 'foo', [ 'target' => '<?php', 'placement' => 'after' ] ), $name );
-		self::$config_transformer->update( 'constant', $name, '', [ 'raw' => true ] );
+		$this->assertTrue( self::$config_transformer->add( 'constant', $name, 'foo', array( 'target' => '<?php', 'placement' => 'after' ) ), $name );
+		self::$config_transformer->update( 'constant', $name, '', array( 'raw' => true ) );
 	}
 
 	/**
@@ -144,8 +144,8 @@ class UpdateTest extends TestCase
 	public function testVariableEmptyStringRaw()
 	{
 		$name = 'test_var_update_empty_string_raw';
-		$this->assertTrue( self::$config_transformer->add( 'variable', $name, 'bar', [ 'target' => '<?php', 'placement' => 'after' ] ), "\${$name}" );
-		self::$config_transformer->update( 'variable', $name, '', [ 'raw' => true ] );
+		$this->assertTrue( self::$config_transformer->add( 'variable', $name, 'bar', array( 'target' => '<?php', 'placement' => 'after' ) ), "\${$name}" );
+		self::$config_transformer->update( 'variable', $name, '', array( 'raw' => true ) );
 	}
 
 	/**
@@ -155,8 +155,8 @@ class UpdateTest extends TestCase
 	public function testConstantWhitespaceStringRaw()
 	{
 		$name = 'TEST_CONST_UPDATE_WHITESPACE_STRING_RAW';
-		$this->assertTrue( self::$config_transformer->add( 'constant', $name, 'foo', [ 'target' => '<?php', 'placement' => 'after' ] ), $name );
-		self::$config_transformer->update( 'constant', $name, '   ', [ 'raw' => true ] );
+		$this->assertTrue( self::$config_transformer->add( 'constant', $name, 'foo', array( 'target' => '<?php', 'placement' => 'after' ) ), $name );
+		self::$config_transformer->update( 'constant', $name, '   ', array( 'raw' => true ) );
 	}
 
 	/**
@@ -166,8 +166,8 @@ class UpdateTest extends TestCase
 	public function testVariableWhitespaceStringRaw()
 	{
 		$name = 'test_var_update_whitespace_string_raw';
-		$this->assertTrue( self::$config_transformer->add( 'variable', $name, 'bar', [ 'target' => '<?php', 'placement' => 'after' ] ), "\${$name}" );
-		self::$config_transformer->update( 'variable', $name, '   ', [ 'raw' => true ] );
+		$this->assertTrue( self::$config_transformer->add( 'variable', $name, 'bar', array( 'target' => '<?php', 'placement' => 'after' ) ), "\${$name}" );
+		self::$config_transformer->update( 'variable', $name, '   ', array( 'raw' => true ) );
 	}
 
 	public function testConfigValues()

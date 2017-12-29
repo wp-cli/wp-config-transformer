@@ -24,7 +24,7 @@ class WPConfigTransformer {
 	 *
 	 * @var array
 	 */
-	protected $wp_configs = [];
+	protected $wp_configs = array();
 
 	/**
 	 * Instantiate the class with a valid wp-config.php.
@@ -239,9 +239,9 @@ class WPConfigTransformer {
 	 * @return array
 	 */
 	protected function parse_wp_config( $src ) {
-		$configs             = [];
-		$configs['constant'] = [];
-		$configs['variable'] = [];
+		$configs             = array();
+		$configs['constant'] = array();
+		$configs['variable'] = array();
 
 		preg_match_all( '/^(\h*define\s*\(\s*[\'"](\w*?)[\'"]\s*)(,\s*(.*?)\s*)((?:,\s*(?:true|false)\s*)?\)\s*;)/ims', $src, $constants );
 		preg_match_all( '/^(\h*\$(\w+)\s*=)(\s*(.*?)\s*;)/ims', $src, $variables );
