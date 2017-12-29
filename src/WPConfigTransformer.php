@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Transform a wp-config.php file.
+ * Transforms a wp-config.php file.
  */
 class WPConfigTransformer {
 
@@ -27,7 +27,7 @@ class WPConfigTransformer {
 	protected $wp_configs = array();
 
 	/**
-	 * Instantiate the class with a valid wp-config.php.
+	 * Instantiates the class with a valid wp-config.php.
 	 *
 	 * @throws Exception If the wp-config.php file is missing.
 	 * @throws Exception If the wp-config.php file is not writable.
@@ -47,7 +47,7 @@ class WPConfigTransformer {
 	}
 
 	/**
-	 * Check if a config exists in the wp-config.php file.
+	 * Checks if a config exists in the wp-config.php file.
 	 *
 	 * @throws Exception If the wp-config.php file is empty.
 	 * @throws Exception If the requested config type is invalid.
@@ -75,7 +75,7 @@ class WPConfigTransformer {
 	}
 
 	/**
-	 * Add a config to the wp-config.php file.
+	 * Adds a config to the wp-config.php file.
 	 *
 	 * @throws Exception If the config value provided is not a string.
 	 * @throws Exception If the config placement target could not be located.
@@ -122,7 +122,7 @@ class WPConfigTransformer {
 	}
 
 	/**
-	 * Update an existing config in the wp-config.php file.
+	 * Updates an existing config in the wp-config.php file.
 	 *
 	 * @throws Exception If the config value provided is not a string.
 	 *
@@ -172,7 +172,7 @@ class WPConfigTransformer {
 	}
 
 	/**
-	 * Remove a config from the wp-config.php file.
+	 * Removes a config from the wp-config.php file.
 	 *
 	 * @param string $type Config type (constant or variable).
 	 * @param string $name Config name.
@@ -191,7 +191,7 @@ class WPConfigTransformer {
 	}
 
 	/**
-	 * Apply formatting to a config value.
+	 * Applies formatting to a config value.
 	 *
 	 * @throws Exception When a raw value is requested for an empty string.
 	 *
@@ -209,7 +209,7 @@ class WPConfigTransformer {
 	}
 
 	/**
-	 * Return normalized source for a name/value pair.
+	 * Normalizes the source output for a name/value pair.
 	 *
 	 * @throws Exception If the requested config type does not support normalization.
 	 *
@@ -232,7 +232,7 @@ class WPConfigTransformer {
 	}
 
 	/**
-	 * Parse the config source.
+	 * Parses the source of a wp-config.php file.
 	 *
 	 * @param string $src Config file source.
 	 *
@@ -279,7 +279,7 @@ class WPConfigTransformer {
 	}
 
 	/**
-	 * Save the wp-config.php file with new content.
+	 * Saves new contents to the wp-config.php file.
 	 *
 	 * @throws Exception If the config file content provided is empty.
 	 * @throws Exception If there is a failure when saving the wp-config.php file.
