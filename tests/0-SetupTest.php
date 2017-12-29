@@ -10,7 +10,7 @@ class SetupTest extends TestCase
 	 */
 	public function testFileMissing()
 	{
-		$config_transformer = new WPConfigTransformer( __DIR__ . '/bin/wp-config-missing.php' );
+		$config_transformer = new WPConfigTransformer( __DIR__ . '/fixtures/wp-config-missing.php' );
 	}
 
 	/**
@@ -19,8 +19,8 @@ class SetupTest extends TestCase
 	 */
 	public function testFileNotWritable()
 	{
-		chmod( __DIR__ . '/bin/wp-config-not-writable.php', 0444 );
-		$config_transformer = new WPConfigTransformer( __DIR__ . '/bin/wp-config-not-writable.php' );
+		chmod( __DIR__ . '/fixtures/wp-config-not-writable.php', 0444 );
+		$config_transformer = new WPConfigTransformer( __DIR__ . '/fixtures/wp-config-not-writable.php' );
 	}
 
 	/**
@@ -29,7 +29,7 @@ class SetupTest extends TestCase
 	 */
 	public function testFileEmpty()
 	{
-		$config_transformer = new WPConfigTransformer( __DIR__ . '/bin/wp-config-empty.php' );
+		$config_transformer = new WPConfigTransformer( __DIR__ . '/fixtures/wp-config-empty.php' );
 		$config_transformer->exists( 'foo', 'bar' );
 	}
 
@@ -39,7 +39,7 @@ class SetupTest extends TestCase
 	 */
 	public function testFileNoConfigType()
 	{
-		$config_transformer = new WPConfigTransformer( __DIR__ . '/bin/wp-config-sample.php' );
+		$config_transformer = new WPConfigTransformer( __DIR__ . '/fixtures/wp-config-example.php' );
 		$config_transformer->exists( 'foo', 'bar' );
 	}
 }

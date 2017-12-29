@@ -12,14 +12,14 @@ class BlockTest extends TestCase
 
 	public static function setUpBeforeClass()
 	{
-		self::$raw_data    = explode( PHP_EOL, file_get_contents( __DIR__ . '/bin/raw-data.txt' ) );
-		self::$string_data = explode( PHP_EOL, file_get_contents( __DIR__ . '/bin/string-data.txt' ) );
+		self::$raw_data    = explode( PHP_EOL, file_get_contents( __DIR__ . '/fixtures/raw-data.txt' ) );
+		self::$string_data = explode( PHP_EOL, file_get_contents( __DIR__ . '/fixtures/string-data.txt' ) );
 
 		if ( version_compare( PHP_VERSION, '7.0', '>=' ) ) {
-			self::$raw_data = array_merge( self::$raw_data, explode( PHP_EOL, file_get_contents( __DIR__ . '/bin/raw-data-extra.txt' ) ) );
+			self::$raw_data = array_merge( self::$raw_data, explode( PHP_EOL, file_get_contents( __DIR__ . '/fixtures/raw-data-extra.txt' ) ) );
 		}
 
-		$block_data = explode( PHP_EOL . '---' . PHP_EOL, file_get_contents( __DIR__ . '/bin/block-data.txt' ) );
+		$block_data = explode( PHP_EOL . '---' . PHP_EOL, file_get_contents( __DIR__ . '/fixtures/block-data.txt' ) );
 
 		self::$block_data['constant'] = array_values( array_filter( $block_data, function ( $v ) {
 			return ( false !== strpos( $v, 'TEST_CONST_#' ) );

@@ -11,15 +11,15 @@ class AddRemoveTest extends TestCase
 
 	public static function setUpBeforeClass()
 	{
-		self::$raw_data    = explode( PHP_EOL, file_get_contents( __DIR__ . '/bin/raw-data.txt' ) );
-		self::$string_data = explode( PHP_EOL, file_get_contents( __DIR__ . '/bin/string-data.txt' ) );
+		self::$raw_data    = explode( PHP_EOL, file_get_contents( __DIR__ . '/fixtures/raw-data.txt' ) );
+		self::$string_data = explode( PHP_EOL, file_get_contents( __DIR__ . '/fixtures/string-data.txt' ) );
 
 		if ( version_compare( PHP_VERSION, '7.0', '>=' ) ) {
-			self::$raw_data = array_merge( self::$raw_data, explode( PHP_EOL, file_get_contents( __DIR__ . '/bin/raw-data-extra.txt' ) ) );
+			self::$raw_data = array_merge( self::$raw_data, explode( PHP_EOL, file_get_contents( __DIR__ . '/fixtures/raw-data-extra.txt' ) ) );
 		}
 
 		self::$test_config_path = __DIR__ . '/wp-config-test-add.php';
-		copy( __DIR__ . '/bin/wp-config-sample.php', self::$test_config_path );
+		copy( __DIR__ . '/fixtures/wp-config-example.php', self::$test_config_path );
 		self::$config_transformer = new WPConfigTransformer( self::$test_config_path );
 	}
 
