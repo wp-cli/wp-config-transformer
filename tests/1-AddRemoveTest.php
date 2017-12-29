@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-class AddTest extends TestCase
+class AddRemoveTest extends TestCase
 {
 	protected static $test_config_path;
 	protected static $config_transformer;
@@ -28,7 +28,7 @@ class AddTest extends TestCase
 		unlink( self::$test_config_path );
 	}
 
-	public function testRawConstants()
+	public function testAddRawConstants()
 	{
 		foreach ( self::$raw_data as $d => $data ) {
 			$name = "TEST_CONST_ADD_RAW_{$d}";
@@ -37,7 +37,7 @@ class AddTest extends TestCase
 		}
 	}
 
-	public function testStringConstants()
+	public function testAddStringConstants()
 	{
 		foreach ( self::$string_data as $d => $data ) {
 			$name = "TEST_CONST_ADD_STRING_{$d}";
@@ -46,7 +46,7 @@ class AddTest extends TestCase
 		}
 	}
 
-	public function testRawVariables()
+	public function testAddRawVariables()
 	{
 		foreach ( self::$raw_data as $d => $data ) {
 			$name = "test_var_add_raw_{$d}";
@@ -55,7 +55,7 @@ class AddTest extends TestCase
 		}
 	}
 
-	public function testStringVariables()
+	public function testAddStringVariables()
 	{
 		foreach ( self::$string_data as $d => $data ) {
 			$name = "test_var_add_string_{$d}";
@@ -78,78 +78,6 @@ class AddTest extends TestCase
 		$this->assertTrue( self::$config_transformer->add( 'variable', $name, 'foo' ), "\${$name}" );
 		$this->assertTrue( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
 		$this->assertFalse( self::$config_transformer->add( 'variable', $name, 'bar' ), "\${$name}" );
-	}
-
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Unable to locate placement target.
-	 */
-	public function testConstantNoPlacementTarget()
-	{
-		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_NO_TARGET', 'foo', [ 'target' => 'nothingtoseehere' ] );
-	}
-
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Unable to locate placement target.
-	 */
-	public function testVariableNoPlacementTarget()
-	{
-		self::$config_transformer->add( 'variable', 'test_var_add_no_target', 'foo', [ 'target' => 'nothingtoseehere' ] );
-	}
-
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Config value must be a string.
-	 */
-	public function testConstantNonString()
-	{
-		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_NON_STRING', true );
-	}
-
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Config value must be a string.
-	 */
-	public function testVariableNonString()
-	{
-		self::$config_transformer->add( 'variable', 'test_var_add_non_string', true );
-	}
-
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Raw value for empty string not supported.
-	 */
-	public function testConstantEmptyStringRaw()
-	{
-		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_EMPTY_STRING_RAW', '', [ 'raw' => true ] );
-	}
-
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Raw value for empty string not supported.
-	 */
-	public function testVariableEmptyStringRaw()
-	{
-		self::$config_transformer->add( 'variable', 'test_var_add_empty_string_raw', '', [ 'raw' => true ] );
-	}
-
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Raw value for empty string not supported.
-	 */
-	public function testConstantWhitespaceStringRaw()
-	{
-		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_WHITESPACE_STRING_RAW', '   ', [ 'raw' => true ] );
-	}
-
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Raw value for empty string not supported.
-	 */
-	public function testVariableWhitespaceStringRaw()
-	{
-		self::$config_transformer->add( 'variable', 'test_var_add_whitespace_string_raw', '   ', [ 'raw' => true ] );
 	}
 
 	public function testConfigValues()
@@ -184,5 +112,117 @@ class AddTest extends TestCase
 
 		$this->assertTrue( ( isset( $test_var_add_exists ) || is_null( $test_var_add_exists ) ), '$test_var_update_add_missing' );
 		$this->assertEquals( 'foo', $test_var_add_exists, '$test_var_add_exists' );
+	}
+
+	public function testRemoveRawConstants()
+	{
+		foreach ( self::$raw_data as $d => $data ) {
+			$name = "TEST_CONST_ADD_RAW_{$d}";
+			$this->assertTrue( self::$config_transformer->exists( 'constant', $name ), $name );
+			$this->assertTrue( self::$config_transformer->remove( 'constant', $name ), $name );
+			$this->assertFalse( self::$config_transformer->exists( 'constant', $name ), $name );
+		}
+	}
+
+	public function testRemoveStringConstants()
+	{
+		foreach ( self::$string_data as $d => $data ) {
+			$name = "TEST_CONST_ADD_STRING_{$d}";
+			$this->assertTrue( self::$config_transformer->exists( 'constant', $name ), $name );
+			$this->assertTrue( self::$config_transformer->remove( 'constant', $name ), $name );
+			$this->assertFalse( self::$config_transformer->exists( 'constant', $name ), $name );
+		}
+	}
+
+	public function testRemoveRawVariables()
+	{
+		foreach ( self::$raw_data as $d => $data ) {
+			$name = "test_var_add_raw_{$d}";
+			$this->assertTrue( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
+			$this->assertTrue( self::$config_transformer->remove( 'variable', $name ), "\${$name}" );
+			$this->assertFalse( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
+		}
+	}
+
+	public function testRemoveStringVariables()
+	{
+		foreach ( self::$string_data as $d => $data ) {
+			$name = "test_var_add_string_{$d}";
+			$this->assertTrue( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
+			$this->assertTrue( self::$config_transformer->remove( 'variable', $name ), "\${$name}" );
+			$this->assertFalse( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
+		}
+	}
+
+	/**
+	 * @expectedException        Exception
+	 * @expectedExceptionMessage Unable to locate placement target.
+	 */
+	public function testAddConstantNoPlacementTarget()
+	{
+		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_NO_TARGET', 'foo', [ 'target' => 'nothingtoseehere' ] );
+	}
+
+	/**
+	 * @expectedException        Exception
+	 * @expectedExceptionMessage Unable to locate placement target.
+	 */
+	public function testAddVariableNoPlacementTarget()
+	{
+		self::$config_transformer->add( 'variable', 'test_var_add_no_target', 'foo', [ 'target' => 'nothingtoseehere' ] );
+	}
+
+	/**
+	 * @expectedException        Exception
+	 * @expectedExceptionMessage Config value must be a string.
+	 */
+	public function testAddConstantNonString()
+	{
+		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_NON_STRING', true );
+	}
+
+	/**
+	 * @expectedException        Exception
+	 * @expectedExceptionMessage Config value must be a string.
+	 */
+	public function testAddVariableNonString()
+	{
+		self::$config_transformer->add( 'variable', 'test_var_add_non_string', true );
+	}
+
+	/**
+	 * @expectedException        Exception
+	 * @expectedExceptionMessage Raw value for empty string not supported.
+	 */
+	public function testAddConstantEmptyStringRaw()
+	{
+		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_EMPTY_STRING_RAW', '', [ 'raw' => true ] );
+	}
+
+	/**
+	 * @expectedException        Exception
+	 * @expectedExceptionMessage Raw value for empty string not supported.
+	 */
+	public function testAddVariableEmptyStringRaw()
+	{
+		self::$config_transformer->add( 'variable', 'test_var_add_empty_string_raw', '', [ 'raw' => true ] );
+	}
+
+	/**
+	 * @expectedException        Exception
+	 * @expectedExceptionMessage Raw value for empty string not supported.
+	 */
+	public function testAddConstantWhitespaceStringRaw()
+	{
+		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_WHITESPACE_STRING_RAW', '   ', [ 'raw' => true ] );
+	}
+
+	/**
+	 * @expectedException        Exception
+	 * @expectedExceptionMessage Raw value for empty string not supported.
+	 */
+	public function testAddVariableWhitespaceStringRaw()
+	{
+		self::$config_transformer->add( 'variable', 'test_var_add_whitespace_string_raw', '   ', [ 'raw' => true ] );
 	}
 }
