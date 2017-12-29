@@ -2,22 +2,11 @@
 
 Programmatically edit a `wp-config.php` file.
 
-* [Basic usage](#basic-usage)
-* [Options](#options)
-    * [Normalization](#normalization)
-    * [Raw format](#raw-format)
-    * [Target string](#target-string)
-    * [Target placement](#target-placement)
-    * [Target buffer](#target-buffer)
-    * [Add if missing](#add-if-missing)
-* [Option forwarding](#option-forwarding)
-* [How it works](#how-it-works)
-    * [Parsing configs](#parsing-configs)
-    * [Editing in place](#editing-in-place)
-    * [Known issues](#known-issues)
-* [Running tests](#running-tests)
+[![Build Status](https://travis-ci.org/wp-cli/wp-config-transformer.svg?branch=master)](https://travis-ci.org/wp-cli/wp-config-transformer)
 
-## Basic usage
+Quick links: [Using](#using) &#124; [Options](#options) &#124; [How it works](#how-it-works) &#124; [Testing](#testing)
+
+## Using
 
 ### Instantiate
 
@@ -135,28 +124,6 @@ $config_transformer->exists( 'constant', 'FOO' ); // Returns false
 $config_transformer->update( 'constant', 'FOO', 'bar', array( 'add' => false ) ); // Returns false
 ```
 
-## Option forwarding
-
-Any option supported by the `add()` method can also be passed through the `update()` method and forwarded along when the config does not exist.
-
-For example, you want to update the `FOO` constant in-place if it exists, otherwise it should be added to a special location:
-
-```php
-$config_transformer->update( 'constant', 'FOO', 'bar', array( 'target' => '/** My special location' ) );
-```
-
-Which has the same effect as the long-form logic:
-
-```php
-if ( $config_transformer->exists( 'constant', 'FOO' ) ) {
-	$config_transformer->update( 'constant', 'FOO', 'bar' );
-} else {
-	$config_transformer->add( 'constant', 'FOO', 'bar', array( 'target' => '/** My special area' ) );
-}
-```
-
-Of course the exception to this is if you are using the `add => false` option, in which case the update will return `false` and no config will be added.
-
 ## How it works
 
 ### Parsing configs
@@ -198,6 +165,28 @@ Will give us a result that safely changes _only_ the value, leaving the formatti
 ;
 ```
 
+### Option forwarding
+
+Any option supported by the `add()` method can also be passed through the `update()` method and forwarded along when the config does not exist.
+
+For example, you want to update the `FOO` constant in-place if it exists, otherwise it should be added to a special location:
+
+```php
+$config_transformer->update( 'constant', 'FOO', 'bar', array( 'target' => '/** My special location' ) );
+```
+
+Which has the same effect as the long-form logic:
+
+```php
+if ( $config_transformer->exists( 'constant', 'FOO' ) ) {
+    $config_transformer->update( 'constant', 'FOO', 'bar' );
+} else {
+    $config_transformer->add( 'constant', 'FOO', 'bar', array( 'target' => '/** My special area' ) );
+}
+```
+
+Of course the exception to this is if you are using the `add => false` option, in which case the update will return `false` and no config will be added.
+
 ### Known issues
 
 1. Regex will only match one config definition per line.
@@ -233,7 +222,7 @@ define( 'WP_DEBUG', true, 'yes' );
 define( 'WP_DEBUG', true, 'this comma, will break everything' );
 ```
 
-## Running tests
+## Testing
 
 ```bash
 $ composer global require phpunit/phpunit
