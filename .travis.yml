@@ -31,11 +31,15 @@ before_install:
 before_script:
   - |
       if [[ ${TRAVIS_PHP_VERSION:0:2} == "7." ]]; then
-        composer global require "phpunit/phpunit=6.5.*"
+        composer require "phpunit/phpunit=6.5.*" --dev
       elif [[ ${TRAVIS_PHP_VERSION:0:3} == "5.6" ]]; then
-        composer global require "phpunit/phpunit=5.7.*"
+        composer require "phpunit/phpunit=5.7.*" --dev
       else
-        composer global require "phpunit/phpunit=4.8.*"
+        composer require "phpunit/phpunit=4.8.*" --dev
       fi
-  - export PATH="$HOME/.composer/vendor/bin:$PATH"
   - composer install
+  - vendor/bin/phpcs --config-set installed_paths vendor/wp-coding-standards/wpcs
+
+script:
+  - vendor/bin/phpcs -v
+  - vendor/bin/phpunit

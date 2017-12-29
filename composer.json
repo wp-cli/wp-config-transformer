@@ -9,6 +9,14 @@
             "email": "fjarrett@gmail.com"
         }
     ],
+    "require": {
+        "php": ">=5.3.29"
+    },
+    "require-dev": {
+        "composer/composer": "^1.5.6",
+        "phpunit/phpunit": "^6.5.5",
+        "wp-coding-standards/wpcs": "^0.14.0"
+    },
     "autoload": {
         "files": [ "src/WPConfigTransformer.php" ]
     }
