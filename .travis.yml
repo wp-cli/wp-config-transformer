@@ -9,15 +9,32 @@ notifications:
     on_success: never
     on_failure: change
 
-matrix:
+jobs:
   include:
-    - php: 7.2
-    - php: 7.1
-    - php: 7.0
-    - php: 5.6
-    - php: 5.5
-    - php: 5.4
-    - php: 5.3
+    - stage: sniff
+      script: ./ci/sniff.sh
+      php: 7.1
+    - stage: test
+      script: ./ci/test.sh
+      php: 7.2
+    - stage: test
+      script: ./ci/test.sh
+      php: 7.1
+    - stage: test
+      script: ./ci/test.sh
+      php: 7.0
+    - stage: test
+      script: ./ci/test.sh
+      php: 5.6
+    - stage: test
+      script: ./ci/test.sh
+      php: 5.5
+    - stage: test
+      script: ./ci/test.sh
+      php: 5.4
+    - stage: test
+      script: ./ci/test.sh
+      php: 5.3
       dist: precise
 
 cache:
@@ -29,17 +46,4 @@ before_install:
   - phpenv config-rm xdebug.ini
 
 before_script:
-  - |
-      if [[ ${TRAVIS_PHP_VERSION:0:2} == "7." ]]; then
-        composer require "phpunit/phpunit=6.5.*" --dev
-      elif [[ ${TRAVIS_PHP_VERSION:0:3} == "5.6" ]]; then
-        composer require "phpunit/phpunit=5.7.*" --dev
-      else
-        composer require "phpunit/phpunit=4.8.*" --dev
-      fi
-  - composer install
-  - vendor/bin/phpcs --config-set installed_paths vendor/wp-coding-standards/wpcs
-
-script:
-  - vendor/bin/phpcs -v
-  - vendor/bin/phpunit
+  - ./ci/prepare.sh
