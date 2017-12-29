@@ -2,7 +2,7 @@
     "name": "wp-cli/wp-config-transformer",
     "description": "Programmatically edit a wp-config.php file.",
     "type": "library",
-    "license": "GPLv2",
+    "license": "MIT",
     "authors": [
         {
             "name": "Frankie Jarrett",
