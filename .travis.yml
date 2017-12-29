@@ -16,6 +16,11 @@ php:
   - 7.1
   - 7.2
 
+matrix:
+  include:
+    - php: 5.3
+      dist: precise
+
 cache:
   directories:
   - vendor
