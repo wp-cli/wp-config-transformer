@@ -166,7 +166,7 @@ class WPConfigTransformer {
 			$new_src      = implode( '', $new_parts );
 		}
 
-		$contents = preg_replace( sprintf( '/^%s/m', preg_quote( $old_src, '/' ) ), $new_src, $this->wp_config_src );
+		$contents = preg_replace( sprintf( '/(?<=^|;|<\?php\s)%s/m', preg_quote( $old_src, '/' ) ), $new_src, $this->wp_config_src );
 
 		return $this->save( $contents );
 	}
@@ -184,7 +184,7 @@ class WPConfigTransformer {
 			return false;
 		}
 
-		$pattern  = sprintf( '/^%s\s*(\S|$)/m', preg_quote( $this->wp_configs[ $type ][ $name ]['src'], '/' ) );
+		$pattern  = sprintf( '/(?<=^|;|<\?php\s)%s\s*(\S|$)/m', preg_quote( $this->wp_configs[ $type ][ $name ]['src'], '/' ) );
 		$contents = preg_replace( $pattern, '$1', $this->wp_config_src );
 
 		return $this->save( $contents );
@@ -243,8 +243,15 @@ class WPConfigTransformer {
 		$configs['constant'] = array();
 		$configs['variable'] = array();
 
-		preg_match_all( '/^(\h*define\s*\(\s*[\'"](\w*?)[\'"]\s*)(,\s*(.*?)\s*)((?:,\s*(?:true|false)\s*)?\)\s*;)/ims', $src, $constants );
-		preg_match_all( '/^(\h*\$(\w+)\s*=)(\s*(.*?)\s*;)/ims', $src, $variables );
+		// Strip comments.
+		foreach ( token_get_all( $src ) as $token ) {
+			if ( in_array( $token[0], array( T_COMMENT, T_DOC_COMMENT ), true ) ) {
+				$src = str_replace( $token[1], '', $src );
+			}
+		}
+
+		preg_match_all( '/(?<=^|;|<\?php\s)(\h*define\s*\(\s*[\'"](\w*?)[\'"]\s*)(,\s*(.*?)\s*)((?:,\s*(?:true|false)\s*)?\)\s*;)/ims', $src, $constants );
+		preg_match_all( '/(?<=^|;|<\?php\s)(\h*\$(\w+)\s*=)(\s*(.*?)\s*;)/ims', $src, $variables );
 
 		if ( ! empty( $constants[0] ) && ! empty( $constants[1] ) && ! empty( $constants[2] ) && ! empty( $constants[3] ) && ! empty( $constants[4] ) && ! empty( $constants[5] ) ) {
 			foreach ( $constants[2] as $index => $name ) {
