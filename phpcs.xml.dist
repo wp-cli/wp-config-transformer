@@ -12,12 +12,16 @@
 	<!-- Show sniff codes in all reports -->
 	<arg value="s"/>
 
+	<rule ref="Squiz.Commenting.FileComment.Missing">
+		<exclude-pattern>src/*</exclude-pattern>
+	</rule>
+
 	<rule ref="WordPress.Files.FileName.NotHyphenatedLowercase">
-		<exclude-pattern>*/src/*</exclude-pattern>
+		<exclude-pattern>src/*</exclude-pattern>
 	</rule>
 
 	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
-		<exclude-pattern>*/src/*</exclude-pattern>
+		<exclude-pattern>src/*</exclude-pattern>
 	</rule>
 
 	<exclude-pattern>*/tests/*</exclude-pattern>
