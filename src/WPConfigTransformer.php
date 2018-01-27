@@ -99,15 +99,15 @@ class WPConfigTransformer {
 		$defaults = array(
 			'raw'       => false, // Display value in raw format without quotes.
 			'anchor'    => "/* That's all, stop editing!", // Config placement anchor string.
-			'buffer'    => PHP_EOL . PHP_EOL, // Buffer between config definition and anchor string.
+			'separator' => PHP_EOL, // Separator between config definition and anchor string.
 			'placement' => 'before', // Config placement direction (insert before or after).
 		);
 
-		list( $raw, $anchor, $buffer, $placement ) = array_values( array_merge( $defaults, $options ) );
+		list( $raw, $anchor, $separator, $placement ) = array_values( array_merge( $defaults, $options ) );
 
 		$raw       = (bool) $raw;
 		$anchor    = (string) $anchor;
-		$buffer    = (string) $buffer;
+		$separator = (string) $separator;
 		$placement = (string) $placement;
 
 		if ( false === strpos( $this->wp_config_src, $anchor ) ) {
@@ -115,7 +115,7 @@ class WPConfigTransformer {
 		}
 
 		$new_src  = $this->normalize( $type, $name, $this->format_value( $value, $raw ) );
-		$new_src  = ( 'after' === $placement ) ? $anchor . $buffer . $new_src : $new_src . $buffer . $anchor;
+		$new_src  = ( 'after' === $placement ) ? $anchor . $separator . $new_src : $new_src . $separator . $anchor;
 		$contents = str_replace( $anchor, $new_src, $this->wp_config_src );
 
 		return $this->save( $contents );

@@ -99,13 +99,13 @@ $config_transformer->update( 'constant', 'FOO', 'bar', array( 'placement' => 'be
 $config_transformer->update( 'constant', 'BAZ', 'qux', array( 'placement' => 'after' ) );
 ```
 
-### Anchor buffer
+### Anchor separator
 
-By default, the buffer between a new config and its anchor string is two EOL (double-space).
+By default, the separator between a new config and its anchor string is an EOL ("\n" on *nix and "\r\n" on Windows).
 
 ```php
-$config_transformer->update( 'constant', 'FOO', 'bar', array( 'buffer' => PHP_EOL . PHP_EOL ) ); // Default
-$config_transformer->update( 'constant', 'FOO', 'bar', array( 'buffer' => PHP_EOL ) );
+$config_transformer->update( 'constant', 'FOO', 'bar', array( 'separator' => PHP_EOL . PHP_EOL ) ); // Default
+$config_transformer->update( 'constant', 'FOO', 'bar', array( 'separator' => PHP_EOL ) );
 ```
 
 ### Add if missing
