@@ -82,26 +82,26 @@ $config_transformer->update( 'constant', 'ABSPATH', "dirname( __FILE__ ) . '/som
 
 The `raw` option means that instead of placing the value inside the config as a string `"dirname( __FILE__ ) . '/somewhere/else/'"` it will become unquoted (and executable) syntax `dirname( __FILE__ ) . '/somewhere/else/'`.
 
-### Target string
+### Anchor string
 
-TODO
+The anchor string is the piece of text that additions will be anchored to.
 
 ```php
-$config_transformer->update( 'constant', 'FOO', 'bar', array( 'target' => '/** Absolute path to the WordPress directory' ) ); // Default
+$config_transformer->update( 'constant', 'FOO', 'bar', array( 'anchor' => '/** Absolute path to the WordPress directory' ) ); // Default
 ```
 
-### Target placement
+### Anchor placement
 
-By default, new configs will be placed before the target string.
+By default, new configs will be placed before the anchor string.
 
 ```php
 $config_transformer->update( 'constant', 'FOO', 'bar', array( 'placement' => 'before' ) ); // Default
 $config_transformer->update( 'constant', 'BAZ', 'qux', array( 'placement' => 'after' ) );
 ```
 
-### Target buffer
+### Anchor buffer
 
-By default, the buffer between a new config and its target string is two EOL (double-space).
+By default, the buffer between a new config and its anchor string is two EOL (double-space).
 
 ```php
 $config_transformer->update( 'constant', 'FOO', 'bar', array( 'buffer' => PHP_EOL . PHP_EOL ) ); // Default
@@ -172,7 +172,7 @@ Any option supported by the `add()` method can also be passed through the `updat
 For example, you want to update the `FOO` constant in-place if it exists, otherwise it should be added to a special location:
 
 ```php
-$config_transformer->update( 'constant', 'FOO', 'bar', array( 'target' => '/** My special location' ) );
+$config_transformer->update( 'constant', 'FOO', 'bar', array( 'anchor' => '/** My special location' ) );
 ```
 
 Which has the same effect as the long-form logic:
@@ -181,7 +181,7 @@ Which has the same effect as the long-form logic:
 if ( $config_transformer->exists( 'constant', 'FOO' ) ) {
     $config_transformer->update( 'constant', 'FOO', 'bar' );
 } else {
-    $config_transformer->add( 'constant', 'FOO', 'bar', array( 'target' => '/** My special area' ) );
+    $config_transformer->add( 'constant', 'FOO', 'bar', array( 'anchor' => '/** My special area' ) );
 }
 ```
 

@@ -156,20 +156,20 @@ class AddRemoveTest extends TestCase
 
 	/**
 	 * @expectedException        Exception
-	 * @expectedExceptionMessage Unable to locate placement target.
+	 * @expectedExceptionMessage Unable to locate placement anchor.
 	 */
-	public function testAddConstantNoPlacementTarget()
+	public function testAddConstantNoPlacementAnchor()
 	{
-		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_NO_TARGET', 'foo', array( 'target' => 'nothingtoseehere' ) );
+		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_NO_ANCHOR', 'foo', array( 'anchor' => 'nothingtoseehere' ) );
 	}
 
 	/**
 	 * @expectedException        Exception
-	 * @expectedExceptionMessage Unable to locate placement target.
+	 * @expectedExceptionMessage Unable to locate placement anchor.
 	 */
-	public function testAddVariableNoPlacementTarget()
+	public function testAddVariableNoPlacementAnchor()
 	{
-		self::$config_transformer->add( 'variable', 'test_var_add_no_target', 'foo', array( 'target' => 'nothingtoseehere' ) );
+		self::$config_transformer->add( 'variable', 'test_var_add_no_anchor', 'foo', array( 'anchor' => 'nothingtoseehere' ) );
 	}
 
 	/**

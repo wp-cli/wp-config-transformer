@@ -78,7 +78,7 @@ class WPConfigTransformer {
 	 * Adds a config to the wp-config.php file.
 	 *
 	 * @throws Exception If the config value provided is not a string.
-	 * @throws Exception If the config placement target could not be located.
+	 * @throws Exception If the config placement anchor could not be located.
 	 *
 	 * @param string $type    Config type (constant or variable).
 	 * @param string $name    Config name.
@@ -98,25 +98,25 @@ class WPConfigTransformer {
 
 		$defaults = array(
 			'raw'       => false, // Display value in raw format without quotes.
-			'target'    => "/* That's all, stop editing!", // Config placement target string.
-			'buffer'    => PHP_EOL . PHP_EOL, // Buffer between config definition and target string.
+			'anchor'    => "/* That's all, stop editing!", // Config placement anchor string.
+			'buffer'    => PHP_EOL . PHP_EOL, // Buffer between config definition and anchor string.
 			'placement' => 'before', // Config placement direction (insert before or after).
 		);
 
-		list( $raw, $target, $buffer, $placement ) = array_values( array_merge( $defaults, $options ) );
+		list( $raw, $anchor, $buffer, $placement ) = array_values( array_merge( $defaults, $options ) );
 
 		$raw       = (bool) $raw;
-		$target    = (string) $target;
+		$anchor    = (string) $anchor;
 		$buffer    = (string) $buffer;
 		$placement = (string) $placement;
 
-		if ( false === strpos( $this->wp_config_src, $target ) ) {
-			throw new Exception( 'Unable to locate placement target.' );
+		if ( false === strpos( $this->wp_config_src, $anchor ) ) {
+			throw new Exception( 'Unable to locate placement anchor.' );
 		}
 
 		$new_src  = $this->normalize( $type, $name, $this->format_value( $value, $raw ) );
-		$new_src  = ( 'after' === $placement ) ? $target . $buffer . $new_src : $new_src . $buffer . $target;
-		$contents = str_replace( $target, $new_src, $this->wp_config_src );
+		$new_src  = ( 'after' === $placement ) ? $anchor . $buffer . $new_src : $new_src . $buffer . $anchor;
+		$contents = str_replace( $anchor, $new_src, $this->wp_config_src );
 
 		return $this->save( $contents );
 	}
