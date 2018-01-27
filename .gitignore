@@ -2,3 +2,4 @@
 
 /tests/wp-config-test*.php
 /vendor/
+composer.lock
