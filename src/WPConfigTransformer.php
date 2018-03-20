@@ -75,6 +75,34 @@ class WPConfigTransformer {
 	}
 
 	/**
+	 * Get the value of a config in the wp-config.php file.
+	 *
+	 * @throws Exception If the wp-config.php file is empty.
+	 * @throws Exception If the requested config type is invalid.
+	 *
+	 * @param string $type Config type (constant or variable).
+	 * @param string $name Config name.
+	 *
+	 * @return array
+	 */
+	public function get_value( $type, $name ) {
+		$wp_config_src = file_get_contents( $this->wp_config_path );
+
+		if ( ! trim( $wp_config_src ) ) {
+			throw new Exception( 'wp-config.php file is empty.' );
+		}
+
+		$this->wp_config_src = $wp_config_src;
+		$this->wp_configs    = $this->parse_wp_config( $this->wp_config_src );
+
+		if ( ! isset( $this->wp_configs[ $type ] ) ) {
+			throw new Exception( "Config type '{$type}' does not exist." );
+		}
+
+		return $this->wp_configs[ $type ][ $name ]['value'];
+	}
+
+	/**
 	 * Adds a config to the wp-config.php file.
 	 *
 	 * @throws Exception If the config value provided is not a string.
