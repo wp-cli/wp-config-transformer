@@ -194,7 +194,7 @@ class WPConfigTransformer {
 			$new_src      = implode( '', $new_parts );
 		}
 
-		$contents = preg_replace( sprintf( '/(?<=^|;|<\?php\s|<\?\s)%s/m', preg_quote( $old_src, '/' ) ), $new_src, $this->wp_config_src );
+		$contents = preg_replace( sprintf( '/(?<=^|;|<\?php\s|<\?\s)%s/m', preg_quote( $old_src, '/' ) ), str_replace( '$', '\$', $new_src ), $this->wp_config_src );
 
 		return $this->save( $contents );
 	}
