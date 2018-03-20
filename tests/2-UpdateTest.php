@@ -96,22 +96,26 @@ class UpdateTest extends TestCase
 		$this->assertFalse( self::$config_transformer->exists( 'constant', $name ), $name );
 	}
 
-	public function testConstantValueIncludesDollarSign() {
+	/**
+	 * @dataProvider constantValueProvider
+	 */
+	public function testConstantValueEscapedCorrectly( $value )
+	{
 		$name = 'DB_PASSWORD';
-		$value = '$12345abcde';
 		self::$config_transformer->update( 'constant', $name, 'foo', array( 'anchor' => '<?php', 'placement' => 'after', 'add' => true ) );
 		$this->assertTrue( self::$config_transformer->exists( 'constant', $name ), $name );
 		$this->assertTrue( self::$config_transformer->update( 'constant', $name, $value ), $name );
 		$this->assertEquals( "'" . $value . "'", self::$config_transformer->get_value( 'constant', $name ) );
 	}
 
-	public function testConstantValueIncludesDoubleSlash() {
-		$name = 'DB_PASSWORD';
-		$value = '\\\\12345abcde';
-		self::$config_transformer->update( 'constant', $name, 'foo', array( 'anchor' => '<?php', 'placement' => 'after', 'add' => true ) );
-		$this->assertTrue( self::$config_transformer->exists( 'constant', $name ), $name );
-		$this->assertTrue( self::$config_transformer->update( 'constant', $name, $value ), $name );
-		$this->assertEquals( "'" . $value . "'", self::$config_transformer->get_value( 'constant', $name ) );
+	public function constantValueProvider() {
+		return array(
+			array( '$12345abcde' ),
+			array( 'abc$12345de' ),
+			array( '$abcde12345' ),
+			array( '123$abcde45' ),
+			array( '\\\\12345abcde' ),
+		);
 	}
 
 	public function testVariableNoAddIfMissing()
