@@ -101,7 +101,7 @@ class UpdateTest extends TestCase
 	 */
 	public function testConstantValueEscapedCorrectly( $value )
 	{
-		$name = 'DB_PASSWORD';
+		$name = 'TEST_CONST_VALUE_ESCAPED';
 		self::$config_transformer->update( 'constant', $name, 'foo', array( 'anchor' => '<?php', 'placement' => 'after', 'add' => true ) );
 		$this->assertTrue( self::$config_transformer->exists( 'constant', $name ), $name );
 		$this->assertTrue( self::$config_transformer->update( 'constant', $name, $value ), $name );
