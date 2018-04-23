@@ -31,6 +31,11 @@ DEFINE( 'TEST_CONST_#', 'oldvalue' );
 ---
 DEFINE  ('TEST_CONST_#'    ,'oldvalue'   );
 ---
+define( 'TEST_CONST_#', 'oldvalue' ); // Some comment
+---
+echo null; // Some comment before
+define( 'TEST_CONST_#', 'oldvalue' ); // Some comment
+---
 define( 'TEST_CONST_#', 'oldvalue', false );
 ---
 define(    'TEST_CONST_#'   ,    'oldvalue'  , false  );
@@ -93,3 +98,8 @@ $test_var_#   ='oldvalue'    ;
 ---
 $test_var_#=
 'oldvalue' ;
+---
+$test_var_# = 'oldvalue'; // Some comment
+---
+echo null; // Some comment before
+$test_var_# = 'oldvalue'; // Some comment
