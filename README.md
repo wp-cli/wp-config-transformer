@@ -70,7 +70,7 @@ Now we will get an output of:
 define( 'WP_DEBUG', true );
 ```
 
-Noice!
+Nice!
 
 ### Raw format
 
