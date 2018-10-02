@@ -16,8 +16,8 @@ class MultilineTest extends TestCase
         */
         file_put_contents( self::$test_config_path, <<<EOF
 <?php
-define('WP_CACHE', true); //
-define('DB_NAME', 'oldvalue');
+define('FIRST_CONSTANT', true); //
+define('SECOND_CONSTANT', 'oldvalue');
 EOF
 );
         self::$config_transformer = new WPConfigTransformer( self::$test_config_path );
@@ -31,13 +31,13 @@ EOF
 
     public function testConfigValues()
     {
-        self::$config_transformer->update('constant', 'DB_NAME', 'newvalue');
+        self::$config_transformer->update('constant', 'SECOND_CONSTANT', 'newvalue');
 
         require_once self::$test_config_path;
 
-        $this->assertTrue( defined( 'DB_NAME' ), 'DB_NAME not defined');
-        $this->assertNotEquals( 'oldvalue', constant( 'DB_NAME' ), 'DB_NAME is still "oldvalue"' );
-        $this->assertEquals( 'newvalue', constant( 'DB_NAME' ), 'DB_NAME is not "newvalue"');
+        $this->assertTrue( defined( 'SECOND_CONSTANT' ), 'SECOND_CONSTANT not defined');
+        $this->assertNotEquals( 'oldvalue', constant( 'SECOND_CONSTANT' ), 'SECOND_CONSTANT is still "oldvalue"' );
+        $this->assertEquals( 'newvalue', constant( 'SECOND_CONSTANT' ), 'SECOND_CONSTANT is not "newvalue"');
 
     }
 }
