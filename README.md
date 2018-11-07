@@ -128,9 +128,9 @@ $config_transformer->update( 'constant', 'FOO', 'bar', array( 'add' => false ) )
 
 ### Parsing configs
 
-Constants: https://regex101.com/r/6AeNGP/3
+Constants: https://regex101.com/r/6AeNGP/4
 
-Variables: https://regex101.com/r/cSLZZz/3
+Variables: https://regex101.com/r/cSLZZz/4
 
 ### Editing in place
 
