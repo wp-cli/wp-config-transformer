@@ -97,7 +97,7 @@ class UpdateTest extends TestCase
 	}
 
 	/**
-	 * @dataProvider constantValueProvider
+	 * @dataProvider constantValueEscapedCorrectlyProvider
 	 */
 	public function testConstantValueEscapedCorrectly( $value )
 	{
@@ -108,7 +108,8 @@ class UpdateTest extends TestCase
 		$this->assertEquals( "'" . $value . "'", self::$config_transformer->get_value( 'constant', $name ) );
 	}
 
-	public function constantValueProvider() {
+	public function constantValueEscapedCorrectlyProvider()
+	{
 		return array(
 			array( '$12345abcde' ),
 			array( 'abc$12345de' ),
@@ -116,6 +117,24 @@ class UpdateTest extends TestCase
 			array( '123$abcde45' ),
 			array( '\\\\12345abcde' ),
 		);
+	}
+
+	public function testConstantUpdateStringContainingClosingStatementChars()
+	{
+		$name = 'TEST_CONST_UPDATE_STRING_CONTAINING_CLOSING_STATEMENT_CHARS';
+		$this->assertTrue( self::$config_transformer->update( 'constant', $name, 'foo);bar', array( 'anchor' => '<?php', 'placement' => 'after', 'add' => true ) ), $name );
+		$this->assertTrue( self::$config_transformer->exists( 'constant', $name ), $name );
+		$this->assertTrue( self::$config_transformer->update( 'constant', $name, 'baz' ), $name );
+		$this->assertEquals( "'baz'", self::$config_transformer->get_value( 'constant', $name ), $name );
+	}
+
+	public function testVariableUpdateStringContainingClosingStatementChars()
+	{
+		$name = 'test_var_update_string_containing_closing_statement_chars';
+		$this->assertTrue( self::$config_transformer->update( 'variable', $name, 'foo);bar', array( 'anchor' => '<?php', 'placement' => 'after', 'add' => true ) ), "\${$name}" );
+		$this->assertTrue( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
+		$this->assertTrue( self::$config_transformer->update( 'variable', $name, 'baz' ), "\${$name}" );
+		$this->assertEquals( "'baz'", self::$config_transformer->get_value( 'variable', $name ), "\${$name}" );
 	}
 
 	public function testVariableNoAddIfMissing()
