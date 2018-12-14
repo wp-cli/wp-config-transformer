@@ -35,12 +35,14 @@ class WPConfigTransformer {
 	 * @param string $wp_config_path Path to a wp-config.php file.
 	 */
 	public function __construct( $wp_config_path ) {
+		$basename = basename( $wp_config_path );
+
 		if ( ! file_exists( $wp_config_path ) ) {
-			throw new Exception( 'wp-config.php file does not exist.' );
+			throw new Exception( "{$basename} does not exist." );
 		}
 
 		if ( ! is_writable( $wp_config_path ) ) {
-			throw new Exception( 'wp-config.php file is not writable.' );
+			throw new Exception( "{$basename} is not writable." );
 		}
 
 		$this->wp_config_path = $wp_config_path;
@@ -61,7 +63,7 @@ class WPConfigTransformer {
 		$wp_config_src = file_get_contents( $this->wp_config_path );
 
 		if ( ! trim( $wp_config_src ) ) {
-			throw new Exception( 'wp-config.php file is empty.' );
+			throw new Exception( 'Config file is empty.' );
 		}
 
 		$this->wp_config_src = $wp_config_src;
@@ -89,7 +91,7 @@ class WPConfigTransformer {
 		$wp_config_src = file_get_contents( $this->wp_config_path );
 
 		if ( ! trim( $wp_config_src ) ) {
-			throw new Exception( 'wp-config.php file is empty.' );
+			throw new Exception( 'Config file is empty.' );
 		}
 
 		$this->wp_config_src = $wp_config_src;
@@ -329,7 +331,7 @@ class WPConfigTransformer {
 	 */
 	protected function save( $contents ) {
 		if ( ! trim( $contents ) ) {
-			throw new Exception( 'Cannot save the wp-config.php file with empty contents.' );
+			throw new Exception( 'Cannot save the config file with empty contents.' );
 		}
 
 		if ( $contents === $this->wp_config_src ) {
@@ -339,7 +341,7 @@ class WPConfigTransformer {
 		$result = file_put_contents( $this->wp_config_path, $contents, LOCK_EX );
 
 		if ( false === $result ) {
-			throw new Exception( 'Failed to update the wp-config.php file.' );
+			throw new Exception( 'Failed to update the config file.' );
 		}
 
 		return true;
