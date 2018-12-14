@@ -6,7 +6,7 @@ class SetupTest extends TestCase
 {
 	/**
 	 * @expectedException        Exception
-	 * @expectedExceptionMessage wp-config.php file does not exist.
+	 * @expectedExceptionMessage wp-config-missing.php does not exist.
 	 */
 	public function testFileMissing()
 	{
@@ -15,7 +15,7 @@ class SetupTest extends TestCase
 
 	/**
 	 * @expectedException        Exception
-	 * @expectedExceptionMessage wp-config.php file is not writable.
+	 * @expectedExceptionMessage wp-config-not-writable.php is not writable.
 	 */
 	public function testFileNotWritable()
 	{
@@ -25,7 +25,7 @@ class SetupTest extends TestCase
 
 	/**
 	 * @expectedException        Exception
-	 * @expectedExceptionMessage wp-config.php file is empty.
+	 * @expectedExceptionMessage Config file is empty.
 	 */
 	public function testFileEmpty()
 	{
