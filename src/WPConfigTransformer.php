@@ -65,8 +65,8 @@ class WPConfigTransformer {
 		if ( ! trim( $wp_config_src ) ) {
 			throw new Exception( 'Config file is empty.' );
 		}
-
-		$this->wp_config_src = $wp_config_src;
+		// Normalize the newline to prevent an issue coming from OSX.
+		$this->wp_config_src = str_replace( array( "\n\r", "\r" ), "\n", $wp_config_src );
 		$this->wp_configs    = $this->parse_wp_config( $this->wp_config_src );
 
 		if ( ! isset( $this->wp_configs[ $type ] ) ) {
