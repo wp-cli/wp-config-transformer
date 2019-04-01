@@ -12,3 +12,7 @@ FALSE
 2.202
 dirname( __FILE__ ) . '/some/path/'
 ( 0644 & ~ umask() )
+'escaped single quote \' wrapped in single quotes'
+'double quote " wrapped in single quotes'
+"escaped double quote \" wrapped in double quotes"
+"single quote ' wrapped in double quotes"
