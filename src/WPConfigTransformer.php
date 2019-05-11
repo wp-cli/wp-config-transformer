@@ -196,8 +196,8 @@ class WPConfigTransformer {
 			$new_src      = implode( '', $new_parts );
 		}
 		
-		// regex: (^\$|^(?:\\\\)+|[^\\](?:\\\\)+|[^\\])\$
-		// subst: $1\\$
+		// regex: (^\$|^(?:\\\\)+|[^\\](?:\\\\)+|[^\\])\$ .
+		// subst: $1\\$ .
 		$safe_new_src = preg_replace('/(^\$|^(?:\\\\\\\\)+|[^\\\\](?:\\\\\\\\)+|[^\\\\])\$/m', '$1\\\\$', trim($new_src));
 
 		$contents = preg_replace(
