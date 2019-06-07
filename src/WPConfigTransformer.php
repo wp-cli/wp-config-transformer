@@ -195,7 +195,7 @@ class WPConfigTransformer {
 			$new_parts[1] = str_replace( $old_value, $new_value, $new_parts[1] ); // Only edit the value part.
 			$new_src      = implode( '', $new_parts );
 		}
-		$safe_new_src = preg_replace( '/(^\$|^(?:\\\\\\\\)+|[^\\\\](?:\\\\\\\\)+|[^\\\\])\$/m', '$1\\\\$', trim( $new_src ) );
+		$safe_new_src = preg_replace( '/([\\\\$])/m', '\\\\$1', trim( $new_src ) );
 
 		$contents = preg_replace(
 			sprintf( '/(?<=^|;|<\?php\s|<\?\s)(\s*?)%s/m', preg_quote( trim( $old_src ), '/' ) ),
