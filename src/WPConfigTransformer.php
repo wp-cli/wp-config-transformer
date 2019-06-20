@@ -4,6 +4,10 @@
  * Transforms a wp-config.php file.
  */
 class WPConfigTransformer {
+	/**
+	 * Append to end of file
+	 */
+	const ANCHOR_EOF = 'EOF';
 
 	/**
 	 * Path to the wp-config.php file.
@@ -140,13 +144,17 @@ class WPConfigTransformer {
 		$separator = (string) $separator;
 		$placement = (string) $placement;
 
-		if ( false === strpos( $this->wp_config_src, $anchor ) ) {
-			throw new Exception( 'Unable to locate placement anchor.' );
-		}
+		if ( self::ANCHOR_EOF === $anchor ) {
+			$contents = $this->wp_config_src . $this->normalize( $type, $name, $this->format_value( $value, $raw ) );
+		} else {
+			if ( false === strpos( $this->wp_config_src, $anchor ) ) {
+				throw new Exception( 'Unable to locate placement anchor.' );
+			}
 
-		$new_src  = $this->normalize( $type, $name, $this->format_value( $value, $raw ) );
-		$new_src  = ( 'after' === $placement ) ? $anchor . $separator . $new_src : $new_src . $separator . $anchor;
-		$contents = str_replace( $anchor, $new_src, $this->wp_config_src );
+			$new_src  = $this->normalize( $type, $name, $this->format_value( $value, $raw ) );
+			$new_src  = ( 'after' === $placement ) ? $anchor . $separator . $new_src : $new_src . $separator . $anchor;
+			$contents = str_replace( $anchor, $new_src, $this->wp_config_src );
+		}
 
 		return $this->save( $contents );
 	}

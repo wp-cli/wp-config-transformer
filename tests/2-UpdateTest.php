@@ -251,4 +251,15 @@ class UpdateTest extends TestCase
 		$this->assertFalse( defined( 'TEST_CONST_UPDATE_NO_ADD_MISSING' ), 'TEST_CONST_UPDATE_NO_ADD_MISSING' );
 		$this->assertFalse( isset( $test_var_update_no_add_missing ), '$test_var_update_no_add_missing' );
 	}
+
+	public function testAddConstantWithoutAnchor()
+	{
+		$name = 'TEST_CONST_ADD_EXISTS_NO_ANCHOR';
+		$this->assertTrue( self::$config_transformer->add( 'constant', $name, 'foo', array ( 'anchor' => WPConfigTransformer::ANCHOR_EOF ), $name ) );
+		$this->assertTrue( self::$config_transformer->exists( 'constant', $name ), $name );
+		$this->assertFalse( self::$config_transformer->add( 'constant', $name, 'bar' ), $name );
+
+		$config_data = file( self::$test_config_path );
+		$this->assertContains( $name, end($config_data) );
+	}
 }
