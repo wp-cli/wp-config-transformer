@@ -9,13 +9,9 @@
          beStrictAboutTodoAnnotatedTests="true"
          colors="true"
          verbose="true">
-    <testsuite>
-        <directory suffix="Test.php">tests</directory>
-    </testsuite>
-
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">src</directory>
-        </whitelist>
-    </filter>
+    <testsuites>
+        <testsuite name="default">
+            <directory suffix="Test.php">tests</directory>
+        </testsuite>
+    </testsuites>
 </phpunit>

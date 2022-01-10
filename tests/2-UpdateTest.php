@@ -1,16 +1,15 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+use WP_CLI\Tests\TestCase;
 
-class UpdateTest extends TestCase
-{
+class UpdateTest extends TestCase {
+
 	protected static $test_config_path;
 	protected static $config_transformer;
-	protected static $raw_data = array();
+	protected static $raw_data    = array();
 	protected static $string_data = array();
 
-	public static function setUpBeforeClass()
-	{
+	public static function set_up_before_class() {
 		self::$raw_data    = explode( PHP_EOL, file_get_contents( __DIR__ . '/fixtures/raw-data.txt' ) );
 		self::$string_data = explode( PHP_EOL, file_get_contents( __DIR__ . '/fixtures/string-data.txt' ) );
 
@@ -23,93 +22,170 @@ class UpdateTest extends TestCase
 		self::$config_transformer = new WPConfigTransformer( self::$test_config_path );
 	}
 
-	public static function tearDownAfterClass()
-	{
+	public static function tear_down_after_class() {
 		unlink( self::$test_config_path );
 	}
 
-	public function testRawConstants()
-	{
+	public function testRawConstants() {
 		foreach ( self::$raw_data as $d => $data ) {
 			$name = "TEST_CONST_UPDATE_RAW_{$d}";
 			$this->assertFalse( self::$config_transformer->exists( 'constant', $name ), $name );
-			$this->assertTrue( self::$config_transformer->add( 'constant', $name, 'oldvalue', array( 'anchor' => '<?php', 'placement' => 'after' ) ), $name );
+			$this->assertTrue(
+				self::$config_transformer->add(
+					'constant',
+					$name,
+					'oldvalue',
+					array(
+						'anchor'    => '<?php',
+						'placement' => 'after',
+					)
+				),
+				$name
+			);
 			$this->assertTrue( self::$config_transformer->exists( 'constant', $name ), $name );
 			$this->assertTrue( self::$config_transformer->update( 'constant', $name, $data, array( 'raw' => true ) ), $name );
 		}
 	}
 
-	public function testStringConstants()
-	{
+	public function testStringConstants() {
 		foreach ( self::$string_data as $d => $data ) {
 			$name = "TEST_CONST_UPDATE_STRING_{$d}";
 			$this->assertFalse( self::$config_transformer->exists( 'constant', $name ), $name );
-			$this->assertTrue( self::$config_transformer->add( 'constant', $name, 'oldvalue', array( 'anchor' => '<?php', 'placement' => 'after' ) ), $name );
+			$this->assertTrue(
+				self::$config_transformer->add(
+					'constant',
+					$name,
+					'oldvalue',
+					array(
+						'anchor'    => '<?php',
+						'placement' => 'after',
+					)
+				),
+				$name
+			);
 			$this->assertTrue( self::$config_transformer->exists( 'constant', $name ), $name );
 			$this->assertTrue( self::$config_transformer->update( 'constant', $name, $data ), $name );
 		}
 	}
 
-	public function testRawVariables()
-	{
+	public function testRawVariables() {
 		foreach ( self::$raw_data as $d => $data ) {
 			$name = "test_var_update_raw_{$d}";
 			$this->assertFalse( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
-			$this->assertTrue( self::$config_transformer->add( 'variable', $name, 'oldvalue', array( 'anchor' => '<?php', 'placement' => 'after' ) ), "\${$name}" );
+			$this->assertTrue(
+				self::$config_transformer->add(
+					'variable',
+					$name,
+					'oldvalue',
+					array(
+						'anchor'    => '<?php',
+						'placement' => 'after',
+					)
+				),
+				"\${$name}"
+			);
 			$this->assertTrue( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
 			$this->assertTrue( self::$config_transformer->update( 'variable', $name, $data, array( 'raw' => true ) ), "\${$name}" );
 		}
 	}
 
-	public function testStringVariables()
-	{
+	public function testStringVariables() {
 		foreach ( self::$string_data as $d => $data ) {
 			$name = "test_var_update_string_{$d}";
 			$this->assertFalse( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
-			$this->assertTrue( self::$config_transformer->add( 'variable', $name, 'oldvalue', array( 'anchor' => '<?php', 'placement' => 'after' ) ), "\${$name}" );
+			$this->assertTrue(
+				self::$config_transformer->add(
+					'variable',
+					$name,
+					'oldvalue',
+					array(
+						'anchor'    => '<?php',
+						'placement' => 'after',
+					)
+				),
+				"\${$name}"
+			);
 			$this->assertTrue( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
 			$this->assertTrue( self::$config_transformer->update( 'variable', $name, $data ), "\${$name}" );
 		}
 	}
 
-	public function testConstantAddIfMissing()
-	{
+	public function testConstantAddIfMissing() {
 		$name = 'TEST_CONST_UPDATE_ADD_MISSING';
 		$this->assertFalse( self::$config_transformer->exists( 'constant', $name ), $name );
-		$this->assertTrue( self::$config_transformer->update( 'constant', $name, 'foo', array( 'anchor' => '<?php', 'placement' => 'after' ) ), $name );
+		$this->assertTrue(
+			self::$config_transformer->update(
+				'constant',
+				$name,
+				'foo',
+				array(
+					'anchor'    => '<?php',
+					'placement' => 'after',
+				)
+			),
+			$name
+		);
 		$this->assertTrue( self::$config_transformer->exists( 'constant', $name ), $name );
 	}
 
-	public function testVariableAddIfMissing()
-	{
+	public function testVariableAddIfMissing() {
 		$name = 'test_var_update_add_missing';
 		$this->assertFalse( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
-		$this->assertTrue( self::$config_transformer->update( 'variable', $name, 'bar', array( 'anchor' => '<?php', 'placement' => 'after' ) ), "\${$name}" );
+		$this->assertTrue(
+			self::$config_transformer->update(
+				'variable',
+				$name,
+				'bar',
+				array(
+					'anchor'    => '<?php',
+					'placement' => 'after',
+				)
+			),
+			"\${$name}"
+		);
 		$this->assertTrue( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
 	}
 
-	public function testConstantNoAddIfMissing()
-	{
+	public function testConstantNoAddIfMissing() {
 		$name = 'TEST_CONST_UPDATE_NO_ADD_MISSING';
 		$this->assertFalse( self::$config_transformer->exists( 'constant', $name ), $name );
-		$this->assertFalse( self::$config_transformer->update( 'constant', $name, 'foo', array( 'anchor' => '<?php', 'placement' => 'after', 'add' => false ) ), $name );
+		$this->assertFalse(
+			self::$config_transformer->update(
+				'constant',
+				$name,
+				'foo',
+				array(
+					'anchor'    => '<?php',
+					'placement' => 'after',
+					'add'       => false,
+				)
+			),
+			$name
+		);
 		$this->assertFalse( self::$config_transformer->exists( 'constant', $name ), $name );
 	}
 
 	/**
 	 * @dataProvider constantValueEscapedCorrectlyProvider
 	 */
-	public function testConstantValueEscapedCorrectly( $value )
-	{
+	public function testConstantValueEscapedCorrectly( $value ) {
 		$name = 'TEST_CONST_VALUE_ESCAPED';
-		self::$config_transformer->update( 'constant', $name, 'foo', array( 'anchor' => '<?php', 'placement' => 'after', 'add' => true ) );
+		self::$config_transformer->update(
+			'constant',
+			$name,
+			'foo',
+			array(
+				'anchor'    => '<?php',
+				'placement' => 'after',
+				'add'       => true,
+			)
+		);
 		$this->assertTrue( self::$config_transformer->exists( 'constant', $name ), $name );
 		$this->assertTrue( self::$config_transformer->update( 'constant', $name, $value ), $name );
 		$this->assertEquals( "'" . $value . "'", self::$config_transformer->get_value( 'constant', $name ) );
 	}
 
-	public function constantValueEscapedCorrectlyProvider()
-	{
+	public function constantValueEscapedCorrectlyProvider() {
 		return array(
 			array( '$12345abcde' ),
 			array( 'abc$12345de' ),
@@ -119,104 +195,185 @@ class UpdateTest extends TestCase
 		);
 	}
 
-	public function testConstantUpdateStringContainingClosingStatementChars()
-	{
+	public function testConstantUpdateStringContainingClosingStatementChars() {
 		$name = 'TEST_CONST_UPDATE_STRING_CONTAINING_CLOSING_STATEMENT_CHARS';
-		$this->assertTrue( self::$config_transformer->update( 'constant', $name, 'foo);bar', array( 'anchor' => '<?php', 'placement' => 'after', 'add' => true ) ), $name );
+		$this->assertTrue(
+			self::$config_transformer->update(
+				'constant',
+				$name,
+				'foo);bar',
+				array(
+					'anchor'    => '<?php',
+					'placement' => 'after',
+					'add'       => true,
+				)
+			),
+			$name
+		);
 		$this->assertTrue( self::$config_transformer->exists( 'constant', $name ), $name );
 		$this->assertTrue( self::$config_transformer->update( 'constant', $name, 'baz' ), $name );
 		$this->assertEquals( "'baz'", self::$config_transformer->get_value( 'constant', $name ), $name );
 	}
 
-	public function testVariableUpdateStringContainingClosingStatementChars()
-	{
+	public function testVariableUpdateStringContainingClosingStatementChars() {
 		$name = 'test_var_update_string_containing_closing_statement_chars';
-		$this->assertTrue( self::$config_transformer->update( 'variable', $name, 'foo);bar', array( 'anchor' => '<?php', 'placement' => 'after', 'add' => true ) ), "\${$name}" );
+		$this->assertTrue(
+			self::$config_transformer->update(
+				'variable',
+				$name,
+				'foo);bar',
+				array(
+					'anchor'    => '<?php',
+					'placement' => 'after',
+					'add'       => true,
+				)
+			),
+			"\${$name}"
+		);
 		$this->assertTrue( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
 		$this->assertTrue( self::$config_transformer->update( 'variable', $name, 'baz' ), "\${$name}" );
 		$this->assertEquals( "'baz'", self::$config_transformer->get_value( 'variable', $name ), "\${$name}" );
 	}
 
-	public function testVariableNoAddIfMissing()
-	{
+	public function testVariableNoAddIfMissing() {
 		$name = 'test_var_update_no_add_missing';
 		$this->assertFalse( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
-		$this->assertFalse( self::$config_transformer->update( 'variable', $name, 'bar', array( 'anchor' => '<?php', 'placement' => 'after', 'add' => false ) ), "\${$name}" );
+		$this->assertFalse(
+			self::$config_transformer->update(
+				'variable',
+				$name,
+				'bar',
+				array(
+					'anchor'    => '<?php',
+					'placement' => 'after',
+					'add'       => false,
+				)
+			),
+			"\${$name}"
+		);
 		$this->assertFalse( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
 	}
 
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Config value must be a string.
-	 */
-	public function testConstantNonString()
-	{
+	public function testConstantNonString() {
+		$this->expectException( Exception::class );
+		$this->expectExceptionMessage( 'Config value must be a string.' );
 		$name = 'TEST_CONST_UPDATE_NON_STRING';
-		$this->assertTrue( self::$config_transformer->add( 'constant', $name, 'foo', array( 'anchor' => '<?php', 'placement' => 'after' ) ), $name );
+		$this->assertTrue(
+			self::$config_transformer->add(
+				'constant',
+				$name,
+				'foo',
+				array(
+					'anchor'    => '<?php',
+					'placement' => 'after',
+				)
+			),
+			$name
+		);
 		self::$config_transformer->update( 'constant', $name, true );
 	}
 
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Config value must be a string.
-	 */
-	public function testVariableNonString()
-	{
+	public function testVariableNonString() {
+		$this->expectException( Exception::class );
+		$this->expectExceptionMessage( 'Config value must be a string.' );
 		$name = 'test_var_update_non_string';
-		$this->assertTrue( self::$config_transformer->add( 'variable', $name, 'bar', array( 'anchor' => '<?php', 'placement' => 'after' ) ), "\${$name}" );
+		$this->assertTrue(
+			self::$config_transformer->add(
+				'variable',
+				$name,
+				'bar',
+				array(
+					'anchor'    => '<?php',
+					'placement' => 'after',
+				)
+			),
+			"\${$name}"
+		);
 		self::$config_transformer->update( 'variable', $name, true );
 	}
 
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Raw value for empty string not supported.
-	 */
-	public function testConstantEmptyStringRaw()
-	{
+	public function testConstantEmptyStringRaw() {
+		$this->expectException( Exception::class );
+		$this->expectExceptionMessage( 'Raw value for empty string not supported.' );
 		$name = 'TEST_CONST_UPDATE_EMPTY_STRING_RAW';
-		$this->assertTrue( self::$config_transformer->add( 'constant', $name, 'foo', array( 'anchor' => '<?php', 'placement' => 'after' ) ), $name );
+		$this->assertTrue(
+			self::$config_transformer->add(
+				'constant',
+				$name,
+				'foo',
+				array(
+					'anchor'    => '<?php',
+					'placement' => 'after',
+				)
+			),
+			$name
+		);
 		self::$config_transformer->update( 'constant', $name, '', array( 'raw' => true ) );
 	}
 
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Raw value for empty string not supported.
-	 */
-	public function testVariableEmptyStringRaw()
-	{
+	public function testVariableEmptyStringRaw() {
+		$this->expectException( Exception::class );
+		$this->expectExceptionMessage( 'Raw value for empty string not supported.' );
 		$name = 'test_var_update_empty_string_raw';
-		$this->assertTrue( self::$config_transformer->add( 'variable', $name, 'bar', array( 'anchor' => '<?php', 'placement' => 'after' ) ), "\${$name}" );
+		$this->assertTrue(
+			self::$config_transformer->add(
+				'variable',
+				$name,
+				'bar',
+				array(
+					'anchor'    => '<?php',
+					'placement' => 'after',
+				)
+			),
+			"\${$name}"
+		);
 		self::$config_transformer->update( 'variable', $name, '', array( 'raw' => true ) );
 	}
 
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Raw value for empty string not supported.
-	 */
-	public function testConstantWhitespaceStringRaw()
-	{
+	public function testConstantWhitespaceStringRaw() {
+		$this->expectException( Exception::class );
+		$this->expectExceptionMessage( 'Raw value for empty string not supported.' );
 		$name = 'TEST_CONST_UPDATE_WHITESPACE_STRING_RAW';
-		$this->assertTrue( self::$config_transformer->add( 'constant', $name, 'foo', array( 'anchor' => '<?php', 'placement' => 'after' ) ), $name );
+		$this->assertTrue(
+			self::$config_transformer->add(
+				'constant',
+				$name,
+				'foo',
+				array(
+					'anchor'    => '<?php',
+					'placement' => 'after',
+				)
+			),
+			$name
+		);
 		self::$config_transformer->update( 'constant', $name, '   ', array( 'raw' => true ) );
 	}
 
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Raw value for empty string not supported.
-	 */
-	public function testVariableWhitespaceStringRaw()
-	{
+	public function testVariableWhitespaceStringRaw() {
+		$this->expectException( Exception::class );
+		$this->expectExceptionMessage( 'Raw value for empty string not supported.' );
 		$name = 'test_var_update_whitespace_string_raw';
-		$this->assertTrue( self::$config_transformer->add( 'variable', $name, 'bar', array( 'anchor' => '<?php', 'placement' => 'after' ) ), "\${$name}" );
+		$this->assertTrue(
+			self::$config_transformer->add(
+				'variable',
+				$name,
+				'bar',
+				array(
+					'anchor'    => '<?php',
+					'placement' => 'after',
+				)
+			),
+			"\${$name}"
+		);
 		self::$config_transformer->update( 'variable', $name, '   ', array( 'raw' => true ) );
 	}
 
-	public function testConfigValues()
-	{
+	public function testConfigValues() {
 		require_once self::$test_config_path;
 
 		foreach ( self::$raw_data as $d => $data ) {
-			eval( "\$data = $data;" ); // Convert string to a real value.
+			// Convert string to a real value.
+			eval( "\$data = $data;" ); // phpcs:ignore Squiz.PHP.Eval.Discouraged
 			// Raw Constants
 			$name = "TEST_CONST_UPDATE_RAW_{$d}";
 			$this->assertTrue( defined( $name ), $name );
@@ -252,14 +409,13 @@ class UpdateTest extends TestCase
 		$this->assertFalse( isset( $test_var_update_no_add_missing ), '$test_var_update_no_add_missing' );
 	}
 
-	public function testAddConstantWithoutAnchor()
-	{
+	public function testAddConstantWithoutAnchor() {
 		$name = 'TEST_CONST_ADD_EXISTS_NO_ANCHOR';
-		$this->assertTrue( self::$config_transformer->add( 'constant', $name, 'foo', array ( 'anchor' => WPConfigTransformer::ANCHOR_EOF ), $name ) );
+		$this->assertTrue( self::$config_transformer->add( 'constant', $name, 'foo', array( 'anchor' => WPConfigTransformer::ANCHOR_EOF ), $name ) );
 		$this->assertTrue( self::$config_transformer->exists( 'constant', $name ), $name );
 		$this->assertFalse( self::$config_transformer->add( 'constant', $name, 'bar' ), $name );
 
 		$config_data = file( self::$test_config_path );
-		$this->assertContains( $name, end($config_data) );
+		$this->assertStringContainsString( $name, end( $config_data ) );
 	}
 }
