@@ -1,6 +1,6 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+use WP_CLI\Tests\TestCase;
 
 class AddRemoveTest extends TestCase
 {
@@ -9,7 +9,7 @@ class AddRemoveTest extends TestCase
 	protected static $raw_data = array();
 	protected static $string_data = array();
 
-	public static function setUpBeforeClass()
+	public static function set_up_before_class()
 	{
 		self::$raw_data    = explode( PHP_EOL, file_get_contents( __DIR__ . '/fixtures/raw-data.txt' ) );
 		self::$string_data = explode( PHP_EOL, file_get_contents( __DIR__ . '/fixtures/string-data.txt' ) );
@@ -23,7 +23,7 @@ class AddRemoveTest extends TestCase
 		self::$config_transformer = new WPConfigTransformer( self::$test_config_path );
 	}
 
-	public static function tearDownAfterClass()
+	public static function tear_down_after_class()
 	{
 		unlink( self::$test_config_path );
 	}
@@ -154,75 +154,59 @@ class AddRemoveTest extends TestCase
 		}
 	}
 
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Unable to locate placement anchor.
-	 */
 	public function testAddConstantNoPlacementAnchor()
 	{
+        $this->expectException( Exception::class );
+        $this->expectExceptionMessage( 'Unable to locate placement anchor.' );
 		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_NO_ANCHOR', 'foo', array( 'anchor' => 'nothingtoseehere' ) );
 	}
 
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Unable to locate placement anchor.
-	 */
 	public function testAddVariableNoPlacementAnchor()
 	{
+        $this->expectException( Exception::class );
+        $this->expectExceptionMessage( 'Unable to locate placement anchor.' );
 		self::$config_transformer->add( 'variable', 'test_var_add_no_anchor', 'foo', array( 'anchor' => 'nothingtoseehere' ) );
 	}
 
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Config value must be a string.
-	 */
 	public function testAddConstantNonString()
 	{
+        $this->expectException( Exception::class );
+        $this->expectExceptionMessage( 'Config value must be a string.' );
 		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_NON_STRING', true );
 	}
 
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Config value must be a string.
-	 */
 	public function testAddVariableNonString()
 	{
+        $this->expectException( Exception::class );
+        $this->expectExceptionMessage( 'Config value must be a string.' );
 		self::$config_transformer->add( 'variable', 'test_var_add_non_string', true );
 	}
 
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Raw value for empty string not supported.
-	 */
 	public function testAddConstantEmptyStringRaw()
 	{
+        $this->expectException( Exception::class );
+        $this->expectExceptionMessage( 'Raw value for empty string not supported.' );
 		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_EMPTY_STRING_RAW', '', array( 'raw' => true ) );
 	}
 
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Raw value for empty string not supported.
-	 */
 	public function testAddVariableEmptyStringRaw()
 	{
+        $this->expectException( Exception::class );
+        $this->expectExceptionMessage( 'Raw value for empty string not supported.' );
 		self::$config_transformer->add( 'variable', 'test_var_add_empty_string_raw', '', array( 'raw' => true ) );
 	}
 
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Raw value for empty string not supported.
-	 */
 	public function testAddConstantWhitespaceStringRaw()
 	{
+        $this->expectException( Exception::class );
+        $this->expectExceptionMessage( 'Raw value for empty string not supported.' );
 		self::$config_transformer->add( 'constant', 'TEST_CONST_ADD_WHITESPACE_STRING_RAW', '   ', array( 'raw' => true ) );
 	}
 
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Raw value for empty string not supported.
-	 */
 	public function testAddVariableWhitespaceStringRaw()
 	{
+        $this->expectException( Exception::class );
+        $this->expectExceptionMessage( 'Raw value for empty string not supported.' );
 		self::$config_transformer->add( 'variable', 'test_var_add_whitespace_string_raw', '   ', array( 'raw' => true ) );
 	}
 }

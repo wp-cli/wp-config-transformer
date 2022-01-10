@@ -1,6 +1,6 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+use WP_CLI\Tests\TestCase;
 
 class UpdateTest extends TestCase
 {
@@ -9,7 +9,7 @@ class UpdateTest extends TestCase
 	protected static $raw_data = array();
 	protected static $string_data = array();
 
-	public static function setUpBeforeClass()
+	public static function set_up_before_class()
 	{
 		self::$raw_data    = explode( PHP_EOL, file_get_contents( __DIR__ . '/fixtures/raw-data.txt' ) );
 		self::$string_data = explode( PHP_EOL, file_get_contents( __DIR__ . '/fixtures/string-data.txt' ) );
@@ -23,7 +23,7 @@ class UpdateTest extends TestCase
 		self::$config_transformer = new WPConfigTransformer( self::$test_config_path );
 	}
 
-	public static function tearDownAfterClass()
+	public static function tear_down_after_class()
 	{
 		unlink( self::$test_config_path );
 	}
@@ -145,67 +145,55 @@ class UpdateTest extends TestCase
 		$this->assertFalse( self::$config_transformer->exists( 'variable', $name ), "\${$name}" );
 	}
 
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Config value must be a string.
-	 */
 	public function testConstantNonString()
 	{
+        $this->expectException( Exception::class );
+        $this->expectExceptionMessage( 'Config value must be a string.' );
 		$name = 'TEST_CONST_UPDATE_NON_STRING';
 		$this->assertTrue( self::$config_transformer->add( 'constant', $name, 'foo', array( 'anchor' => '<?php', 'placement' => 'after' ) ), $name );
 		self::$config_transformer->update( 'constant', $name, true );
 	}
 
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Config value must be a string.
-	 */
 	public function testVariableNonString()
 	{
+        $this->expectException( Exception::class );
+        $this->expectExceptionMessage( 'Config value must be a string.' );
 		$name = 'test_var_update_non_string';
 		$this->assertTrue( self::$config_transformer->add( 'variable', $name, 'bar', array( 'anchor' => '<?php', 'placement' => 'after' ) ), "\${$name}" );
 		self::$config_transformer->update( 'variable', $name, true );
 	}
 
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Raw value for empty string not supported.
-	 */
 	public function testConstantEmptyStringRaw()
 	{
+        $this->expectException( Exception::class );
+        $this->expectExceptionMessage( 'Raw value for empty string not supported.' );
 		$name = 'TEST_CONST_UPDATE_EMPTY_STRING_RAW';
 		$this->assertTrue( self::$config_transformer->add( 'constant', $name, 'foo', array( 'anchor' => '<?php', 'placement' => 'after' ) ), $name );
 		self::$config_transformer->update( 'constant', $name, '', array( 'raw' => true ) );
 	}
 
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Raw value for empty string not supported.
-	 */
 	public function testVariableEmptyStringRaw()
 	{
+        $this->expectException( Exception::class );
+        $this->expectExceptionMessage( 'Raw value for empty string not supported.' );
 		$name = 'test_var_update_empty_string_raw';
 		$this->assertTrue( self::$config_transformer->add( 'variable', $name, 'bar', array( 'anchor' => '<?php', 'placement' => 'after' ) ), "\${$name}" );
 		self::$config_transformer->update( 'variable', $name, '', array( 'raw' => true ) );
 	}
 
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Raw value for empty string not supported.
-	 */
 	public function testConstantWhitespaceStringRaw()
 	{
+        $this->expectException( Exception::class );
+        $this->expectExceptionMessage( 'Raw value for empty string not supported.' );
 		$name = 'TEST_CONST_UPDATE_WHITESPACE_STRING_RAW';
 		$this->assertTrue( self::$config_transformer->add( 'constant', $name, 'foo', array( 'anchor' => '<?php', 'placement' => 'after' ) ), $name );
 		self::$config_transformer->update( 'constant', $name, '   ', array( 'raw' => true ) );
 	}
 
-	/**
-	 * @expectedException        Exception
-	 * @expectedExceptionMessage Raw value for empty string not supported.
-	 */
 	public function testVariableWhitespaceStringRaw()
 	{
+        $this->expectException( Exception::class );
+        $this->expectExceptionMessage( 'Raw value for empty string not supported.' );
 		$name = 'test_var_update_whitespace_string_raw';
 		$this->assertTrue( self::$config_transformer->add( 'variable', $name, 'bar', array( 'anchor' => '<?php', 'placement' => 'after' ) ), "\${$name}" );
 		self::$config_transformer->update( 'variable', $name, '   ', array( 'raw' => true ) );
@@ -260,6 +248,6 @@ class UpdateTest extends TestCase
 		$this->assertFalse( self::$config_transformer->add( 'constant', $name, 'bar' ), $name );
 
 		$config_data = file( self::$test_config_path );
-		$this->assertContains( $name, end($config_data) );
+		$this->assertStringContainsString( $name, end($config_data) );
 	}
 }

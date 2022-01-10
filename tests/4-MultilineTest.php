@@ -1,13 +1,13 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+use WP_CLI\Tests\TestCase;
 
 class MultilineTest extends TestCase
 {
 	protected static $test_config_path;
 	protected static $config_transformer;
 
-    public static function setUpBeforeClass() {
+    public static function set_up_before_class() {
         self::$test_config_path = __DIR__ . '/wp-config-test-multiline.php';
         /* The // at the end of the first line causes parse_wp_config to
            have a space prefixing the second line, which causes the preg_replace
@@ -25,7 +25,7 @@ EOF
     }
 
 
-    public static function tearDownAfterClass() {
+    public static function tear_down_after_class() {
         unlink( self::$test_config_path );
     }
 

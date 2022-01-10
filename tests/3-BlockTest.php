@@ -1,6 +1,6 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+use WP_CLI\Tests\TestCase;
 
 class BlockTest extends TestCase
 {
@@ -10,7 +10,7 @@ class BlockTest extends TestCase
 	protected static $string_data = array();
 	protected static $block_data = array();
 
-	public static function setUpBeforeClass()
+	public static function set_up_before_class()
 	{
 		self::$raw_data    = explode( PHP_EOL, file_get_contents( __DIR__ . '/fixtures/raw-data.txt' ) );
 		self::$string_data = explode( PHP_EOL, file_get_contents( __DIR__ . '/fixtures/string-data.txt' ) );
@@ -54,7 +54,7 @@ class BlockTest extends TestCase
 		self::$config_transformer = new WPConfigTransformer( self::$test_config_path );
 	}
 
-	public static function tearDownAfterClass()
+	public static function tear_down_after_class()
 	{
 		unlink( self::$test_config_path );
 	}
