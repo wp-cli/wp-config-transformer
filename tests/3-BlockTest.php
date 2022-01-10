@@ -2,16 +2,15 @@
 
 use WP_CLI\Tests\TestCase;
 
-class BlockTest extends TestCase
-{
+class BlockTest extends TestCase {
+
 	protected static $test_config_path;
 	protected static $config_transformer;
-	protected static $raw_data = array();
+	protected static $raw_data    = array();
 	protected static $string_data = array();
-	protected static $block_data = array();
+	protected static $block_data  = array();
 
-	public static function set_up_before_class()
-	{
+	public static function set_up_before_class() {
 		self::$raw_data    = explode( PHP_EOL, file_get_contents( __DIR__ . '/fixtures/raw-data.txt' ) );
 		self::$string_data = explode( PHP_EOL, file_get_contents( __DIR__ . '/fixtures/string-data.txt' ) );
 
@@ -21,13 +20,23 @@ class BlockTest extends TestCase
 
 		$block_data = explode( PHP_EOL . '---' . PHP_EOL, file_get_contents( __DIR__ . '/fixtures/block-data.txt' ) );
 
-		self::$block_data['constant'] = array_values( array_filter( $block_data, function ( $v ) {
-			return ( false !== strpos( $v, 'TEST_CONST_#' ) );
-		} ) );
+		self::$block_data['constant'] = array_values(
+			array_filter(
+				$block_data,
+				function ( $v ) {
+					return ( false !== strpos( $v, 'TEST_CONST_#' ) );
+				}
+			)
+		);
 
-		self::$block_data['variable'] = array_values( array_filter( $block_data, function ( $v ) {
-			return ( false !== strpos( $v, 'test_var_#' ) );
-		} ) );
+		self::$block_data['variable'] = array_values(
+			array_filter(
+				$block_data,
+				function ( $v ) {
+					return ( false !== strpos( $v, 'test_var_#' ) );
+				}
+			)
+		);
 
 		$contents = '<?php' . PHP_EOL . PHP_EOL;
 
@@ -54,13 +63,11 @@ class BlockTest extends TestCase
 		self::$config_transformer = new WPConfigTransformer( self::$test_config_path );
 	}
 
-	public static function tear_down_after_class()
-	{
+	public static function tear_down_after_class() {
 		unlink( self::$test_config_path );
 	}
 
-	public function testBlockRawConstants()
-	{
+	public function testBlockRawConstants() {
 		foreach ( self::$block_data['constant'] as $b => $block ) {
 			foreach ( self::$raw_data as $d => $data ) {
 				$name = "TEST_CONST_BLOCK_{$b}_RAW_{$d}";
@@ -70,8 +77,7 @@ class BlockTest extends TestCase
 		}
 	}
 
-	public function testBlockStringConstants()
-	{
+	public function testBlockStringConstants() {
 		foreach ( self::$block_data['constant'] as $b => $block ) {
 			foreach ( self::$string_data as $d => $data ) {
 				$name = "TEST_CONST_BLOCK_{$b}_STRING_{$d}";
@@ -81,8 +87,7 @@ class BlockTest extends TestCase
 		}
 	}
 
-	public function testBlockRawVariables()
-	{
+	public function testBlockRawVariables() {
 		foreach ( self::$block_data['variable'] as $b => $block ) {
 			foreach ( self::$raw_data as $d => $data ) {
 				$name = "test_var_block_{$b}_raw_{$d}";
@@ -92,8 +97,7 @@ class BlockTest extends TestCase
 		}
 	}
 
-	public function testBlockStringVariables()
-	{
+	public function testBlockStringVariables() {
 		foreach ( self::$block_data['variable'] as $b => $block ) {
 			foreach ( self::$string_data as $d => $data ) {
 				$name = "test_var_block_{$b}_string_{$d}";
@@ -103,15 +107,15 @@ class BlockTest extends TestCase
 		}
 	}
 
-	public function testConfigValues()
-	{
+	public function testConfigValues() {
 		require_once self::$test_config_path;
 
 		// Constants
 		foreach ( self::$block_data['constant'] as $b => $block ) {
 			// Raw
 			foreach ( self::$raw_data as $d => $data ) {
-				eval( "\$data = $data;" ); // Convert string to a real value.
+				// Convert string to a real value.
+				eval( "\$data = $data;" ); // phpcs:ignore Squiz.PHP.Eval.Discouraged
 				$name = "TEST_CONST_BLOCK_{$b}_RAW_{$d}";
 				$this->assertTrue( defined( $name ), $name );
 				$this->assertNotEquals( 'oldvalue', constant( $name ), $name );
@@ -130,7 +134,8 @@ class BlockTest extends TestCase
 		foreach ( self::$block_data['variable'] as $b => $block ) {
 			// Raw
 			foreach ( self::$raw_data as $d => $data ) {
-				eval( "\$data = $data;" ); // Convert string to a real value.
+				// Convert string to a real value.
+				eval( "\$data = $data;" ); // phpcs:ignore Squiz.PHP.Eval.Discouraged
 				$name = "test_var_block_{$b}_raw_{$d}";
 				$this->assertTrue( ( isset( ${$name} ) || is_null( ${$name} ) ), "\${$name}" );
 				$this->assertNotEquals( 'oldvalue', ${$name}, "\${$name}" );

@@ -1,29 +1,59 @@
 <?xml version="1.0"?>
-<ruleset name="WordPress Coding Standards">
-	<description>Generally-applicable sniffs for WordPress projects</description>
+<ruleset name="WP-Config-Transformer">
+	<description>Custom ruleset for WP Config Transformer</description>
 
-	<rule ref="WordPress-Core" />
-	<rule ref="WordPress-Docs" />
+	<!--
+	#############################################################################
+	COMMAND LINE ARGUMENTS
+	For help understanding this file: https://github.com/squizlabs/PHP_CodeSniffer/wiki/Annotated-ruleset.xml
+	For help using PHPCS: https://github.com/squizlabs/PHP_CodeSniffer/wiki/Usage
+	#############################################################################
+	-->
 
-	<!-- Check all PHP files in directory tree by default. -->
-	<arg name="extensions" value="php"/>
+	<!-- What to scan. -->
 	<file>.</file>
 
-	<!-- Show sniff codes in all reports -->
-	<arg value="s"/>
+	<!-- Show progress. -->
+	<arg value="p"/>
 
-	<rule ref="Squiz.Commenting.FileComment.Missing">
-		<exclude-pattern>src/*</exclude-pattern>
+	<!-- Strip the filepaths down to the relevant bit. -->
+	<arg name="basepath" value="./"/>
+
+	<!-- Check up to 8 files simultanously. -->
+	<arg name="parallel" value="8"/>
+
+	<!--
+	#############################################################################
+	USE THE WP_CLI_CS RULESET
+	#############################################################################
+	-->
+
+	<rule ref="WP_CLI_CS"/>
+
+	<!--
+	#############################################################################
+	PROJECT SPECIFIC CONFIGURATION FOR SNIFFS
+	#############################################################################
+	-->
+
+	<!-- For help understanding the `testVersion` configuration setting:
+		 https://github.com/PHPCompatibility/PHPCompatibility#sniffing-your-code-for-compatibility-with-specific-php-versions -->
+	<config name="testVersion" value="5.6-"/>
+
+	<rule ref="Internal.NoCodeFound">
+		<exclude-pattern>tests/fixtures/wp-config-empty\.php$</exclude-pattern>
 	</rule>
 
-	<rule ref="WordPress.Files.FileName.NotHyphenatedLowercase">
-		<exclude-pattern>src/*</exclude-pattern>
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound">
+		<exclude-pattern>tests/fixtures/wp-config-(?:example|not-writable)\.php$</exclude-pattern>
 	</rule>
 
-	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
-		<exclude-pattern>src/*</exclude-pattern>
+	<rule ref="WordPress.WP.GlobalVariablesOverride.Prohibited">
+		<exclude-pattern>tests/fixtures/wp-config-(?:example|not-writable)\.php$</exclude-pattern>
 	</rule>
 
-	<exclude-pattern>*/tests/*</exclude-pattern>
-	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<rule ref="Squiz.PHP.CommentedOutCode.Found">
+		<exclude-pattern>tests/fixtures/wp-config-example\.php$</exclude-pattern>
+	</rule>
+
 </ruleset>
