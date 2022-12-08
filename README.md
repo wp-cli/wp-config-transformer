@@ -2,7 +2,7 @@
 
 Programmatically edit a `wp-config.php` file.
 
-[![Build Status](https://travis-ci.org/wp-cli/wp-config-transformer.svg?branch=master)](https://travis-ci.org/wp-cli/wp-config-transformer)
+[![Testing](https://github.com/wp-cli/wp-config-transformer/actions/workflows/testing.yml/badge.svg)](https://github.com/wp-cli/wp-config-transformer/actions/workflows/testing.yml)
 
 Quick links: [Using](#using) &#124; [Options](#options) &#124; [How it works](#how-it-works) &#124; [Testing](#testing)
 
