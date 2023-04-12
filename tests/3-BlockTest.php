@@ -118,14 +118,14 @@ class BlockTest extends TestCase {
 				eval( "\$data = $data;" ); // phpcs:ignore Squiz.PHP.Eval.Discouraged
 				$name = "TEST_CONST_BLOCK_{$b}_RAW_{$d}";
 				$this->assertTrue( defined( $name ), $name );
-				$this->assertNotEquals( 'oldvalue', constant( $name ), $name );
+				$this->assertNotSame( 'oldvalue', constant( $name ), $name );
 				$this->assertEquals( $data, constant( $name ), $name );
 			}
 			// Strings
 			foreach ( self::$string_data as $d => $data ) {
 				$name = "TEST_CONST_BLOCK_{$b}_STRING_{$d}";
 				$this->assertTrue( defined( $name ), $name );
-				$this->assertNotEquals( 'oldvalue', constant( $name ), $name );
+				$this->assertNotSame( 'oldvalue', constant( $name ), $name );
 				$this->assertEquals( $data, constant( $name ), $name );
 			}
 		}
@@ -138,14 +138,14 @@ class BlockTest extends TestCase {
 				eval( "\$data = $data;" ); // phpcs:ignore Squiz.PHP.Eval.Discouraged
 				$name = "test_var_block_{$b}_raw_{$d}";
 				$this->assertTrue( ( isset( ${$name} ) || is_null( ${$name} ) ), "\${$name}" );
-				$this->assertNotEquals( 'oldvalue', ${$name}, "\${$name}" );
+				$this->assertNotSame( 'oldvalue', ${$name}, "\${$name}" );
 				$this->assertEquals( $data, ${$name}, "\${$name}" );
 			}
 			// Strings
 			foreach ( self::$string_data as $d => $data ) {
 				$name = "test_var_block_{$b}_string_{$d}";
 				$this->assertTrue( ( isset( ${$name} ) || is_null( ${$name} ) ), "\${$name}" );
-				$this->assertNotEquals( 'oldvalue', ${$name}, "\${$name}" );
+				$this->assertNotSame( 'oldvalue', ${$name}, "\${$name}" );
 				$this->assertEquals( $data, ${$name}, "\${$name}" );
 			}
 		}
