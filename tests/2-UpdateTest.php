@@ -377,12 +377,12 @@ class UpdateTest extends TestCase {
 			// Raw Constants
 			$name = "TEST_CONST_UPDATE_RAW_{$d}";
 			$this->assertTrue( defined( $name ), $name );
-			$this->assertNotEquals( 'oldvalue', constant( $name ), $name );
+			$this->assertNotSame( 'oldvalue', constant( $name ), $name );
 			$this->assertEquals( $data, constant( $name ), $name );
 			// Raw Variables
 			$name = "test_var_update_raw_{$d}";
 			$this->assertTrue( ( isset( ${$name} ) || is_null( ${$name} ) ), "\${$name}" );
-			$this->assertNotEquals( 'oldvalue', ${$name}, "\${$name}" );
+			$this->assertNotSame( 'oldvalue', ${$name}, "\${$name}" );
 			$this->assertEquals( $data, ${$name}, "\${$name}" );
 		}
 
@@ -390,12 +390,12 @@ class UpdateTest extends TestCase {
 			// String Constants
 			$name = "TEST_CONST_UPDATE_STRING_{$d}";
 			$this->assertTrue( defined( $name ), $name );
-			$this->assertNotEquals( 'oldvalue', constant( $name ), $name );
+			$this->assertNotSame( 'oldvalue', constant( $name ), $name );
 			$this->assertEquals( $data, constant( $name ), $name );
 			// String Variables
 			$name = "test_var_update_string_{$d}";
 			$this->assertTrue( ( isset( ${$name} ) || is_null( ${$name} ) ), "\${$name}" );
-			$this->assertNotEquals( 'oldvalue', ${$name}, "\${$name}" );
+			$this->assertNotSame( 'oldvalue', ${$name}, "\${$name}" );
 			$this->assertEquals( $data, ${$name}, "\${$name}" );
 		}
 

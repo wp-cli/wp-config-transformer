@@ -37,7 +37,7 @@ EOF
 		require_once self::$test_config_path;
 
 		$this->assertTrue( defined( 'SECOND_CONSTANT' ), 'SECOND_CONSTANT not defined' );
-		$this->assertNotEquals( 'oldvalue', constant( 'SECOND_CONSTANT' ), 'SECOND_CONSTANT is still "oldvalue"' );
+		$this->assertNotSame( 'oldvalue', constant( 'SECOND_CONSTANT' ), 'SECOND_CONSTANT is still "oldvalue"' );
 		$this->assertEquals( 'newvalue', constant( 'SECOND_CONSTANT' ), 'SECOND_CONSTANT is not "newvalue"' );
 
 	}
