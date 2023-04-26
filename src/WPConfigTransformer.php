@@ -89,7 +89,7 @@ class WPConfigTransformer {
 	 * @param string $type Config type (constant or variable).
 	 * @param string $name Config name.
 	 *
-	 * @return array
+	 * @return string|null
 	 */
 	public function get_value( $type, $name ) {
 		$wp_config_src = file_get_contents( $this->wp_config_path );
