@@ -23,7 +23,6 @@ define('SECOND_CONSTANT', 'oldvalue');
 EOF
 		);
 		self::$config_transformer = new WPConfigTransformer( self::$test_config_path );
-
 	}
 
 
@@ -39,6 +38,5 @@ EOF
 		$this->assertTrue( defined( 'SECOND_CONSTANT' ), 'SECOND_CONSTANT not defined' );
 		$this->assertNotSame( 'oldvalue', constant( 'SECOND_CONSTANT' ), 'SECOND_CONSTANT is still "oldvalue"' );
 		$this->assertEquals( 'newvalue', constant( 'SECOND_CONSTANT' ), 'SECOND_CONSTANT is not "newvalue"' );
-
 	}
 }
