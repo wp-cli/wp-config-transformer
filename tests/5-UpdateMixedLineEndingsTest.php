@@ -10,10 +10,21 @@ class UpdateMixedLineEndingsTest extends TestCase {
 		self::$test_config_lines = array(
 			"<?php\n",
 			"// this is a demo\r\n",
+			"\r\n",
+			"\r\n",
 			"define( 'DB_NAME', '' );\n",
 			"define( 'DB_HOST', '' );\r\n",
 			"define( 'DB_USER', '' );\n\r",
+			"\r\n",
+			"\n\r",
+			"\r",
+			"\r",
+			"\r\n",
 			"define( 'DB_COLLATE', '');\n",
+			"\n\r",
+			"\n\r",
+			"\r",
+			"\r",
 		);
 		self::$test_config_path  = tempnam( sys_get_temp_dir(), 'wp-config' );
 		file_put_contents( self::$test_config_path, implode( '', self::$test_config_lines ) );
