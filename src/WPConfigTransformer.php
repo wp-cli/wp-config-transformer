@@ -288,7 +288,13 @@ class WPConfigTransformer {
 		// Strip comments.
 		foreach ( token_get_all( $src ) as $token ) {
 			if ( in_array( $token[0], array( T_COMMENT, T_DOC_COMMENT ), true ) ) {
-				$src = str_replace( $token[1], '', $src );
+				if ( '//' === $token[1] ) {
+					// For empty line comments, actually remove empty line comments instead of all double-slashes.
+					// See: https://github.com/wp-cli/wp-config-transformer/issues/47
+					$src = preg_replace( '/' . preg_quote( '//', '/' ) . '$/m', '', $src );
+				} else {
+					$src = str_replace( $token[1], '', $src );
+				}
 			}
 		}
 
