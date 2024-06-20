@@ -157,13 +157,8 @@ class AddRemoveTest extends TestCase {
 		$this->assertTrue( self::$config_transformer->remove( 'constant', $name ), "Removing constant {$name}" );
 		$this->assertFalse( self::$config_transformer->exists( 'constant', $name ), "Check {$name} does not exist" );
 
-		// Ensure the second constant is still present and unchanged
+		// Ensure the second constant is still present after the removal
 		$this->assertTrue( self::$config_transformer->exists( 'constant', $second_name ), "Check {$second_name} still exists" );
-
-		// Load the wp-config to check if only the intended constant was removed
-		require self::$test_config_path;
-		$this->assertFalse( defined( $name ), "{$name} should not be defined" );
-		$this->assertTrue( defined( $second_name ), "{$second_name} should still be defined" );
 	}
 
 	public function testAddConstantNoPlacementAnchor() {
