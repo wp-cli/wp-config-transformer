@@ -142,6 +142,30 @@ class AddRemoveTest extends TestCase {
 		}
 	}
 
+	public function testRemoveConstantWithConcatenation() {
+		// Set up the initial state by defining a constant with concatenation
+		$name  = 'TEST_USER_PATH';
+		$value = "'/var/www/' . get_current_user()";
+		$this->assertTrue( self::$config_transformer->add( 'constant', $name, $value, array( 'raw' => true ) ), "Adding constant {$name}" );
+
+		// Define another constant to check if it remains untouched
+		$second_name  = 'TEST_THIS_AND';
+		$second_value = "md5('that')";
+		$this->assertTrue( self::$config_transformer->add( 'constant', $second_name, $second_value, array( 'raw' => true ) ), "Adding constant {$second_name}" );
+
+		// Remove the first constant and check the result
+		$this->assertTrue( self::$config_transformer->remove( 'constant', $name ), "Removing constant {$name}" );
+		$this->assertFalse( self::$config_transformer->exists( 'constant', $name ), "Check {$name} does not exist" );
+
+		// Ensure the second constant is still present and unchanged
+		$this->assertTrue( self::$config_transformer->exists( 'constant', $second_name ), "Check {$second_name} still exists" );
+
+		// Load the wp-config to check if only the intended constant was removed
+		require self::$test_config_path;
+		$this->assertFalse( defined( $name ), "{$name} should not be defined" );
+		$this->assertTrue( defined( $second_name ), "{$second_name} should still be defined" );
+	}
+
 	public function testAddConstantNoPlacementAnchor() {
 		$this->expectException( Exception::class );
 		$this->expectExceptionMessage( 'Unable to locate placement anchor.' );
