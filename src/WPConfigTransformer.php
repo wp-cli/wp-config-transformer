@@ -231,13 +231,11 @@ class WPConfigTransformer {
 				"/\bdefine\s*\(\s*['\"]%s['\"]\s*,\s*(('[^']*'|\"[^\"]*\")|\s*(?:[\s\S]*?))\s*\)\s*;\s*/mi",
 				preg_quote( $name, '/' )
 			);
-		} elseif ( 'variable' === $type ) {
+		} else {
 			$pattern = sprintf(
 				'/^\s*\$%s\s*=\s*[\s\S]*?;\s*$/mi',
 				preg_quote( $name, '/' )
 			);
-		} else {
-			return false;
 		}
 
 		$contents = preg_replace( $pattern, '', $this->wp_config_src );
