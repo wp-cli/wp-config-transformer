@@ -226,8 +226,21 @@ class WPConfigTransformer {
 			return false;
 		}
 
-		$pattern  = sprintf( '/(?<=^|;|<\?php\s|<\?\s)%s\s*(\S|$)/m', preg_quote( $this->wp_configs[ $type ][ $name ]['src'], '/' ) );
-		$contents = preg_replace( $pattern, '$1', $this->wp_config_src );
+		if ( 'constant' === $type ) {
+			$pattern = sprintf(
+				"/\bdefine\s*\(\s*['\"]%s['\"]\s*,\s*(('[^']*'|\"[^\"]*\")|\s*(?:[\s\S]*?))\s*\)\s*;\s*/mi",
+				preg_quote( $name, '/' )
+			);
+		} elseif ( 'variable' === $type ) {
+			$pattern = sprintf(
+				'/^\s*\$%s\s*=\s*[\s\S]*?;\s*$/mi',
+				preg_quote( $name, '/' )
+			);
+		} else {
+			return false;
+		}
+
+		$contents = preg_replace( $pattern, '', $this->wp_config_src );
 
 		return $this->save( $contents );
 	}
