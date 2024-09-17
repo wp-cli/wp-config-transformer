@@ -38,14 +38,14 @@ class WPConfigTransformer {
 	 *
 	 * @param string $wp_config_path Path to a wp-config.php file.
 	 */
-	public function __construct( $wp_config_path ) {
+	public function __construct( $wp_config_path, $read_only = false ) {
 		$basename = basename( $wp_config_path );
 
 		if ( ! file_exists( $wp_config_path ) ) {
 			throw new Exception( "{$basename} does not exist." );
 		}
 
-		if ( ! is_writable( $wp_config_path ) ) {
+		if ( ! $read_only && ! is_writable( $wp_config_path ) ) {
 			throw new Exception( "{$basename} is not writable." );
 		}
 
