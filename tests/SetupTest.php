@@ -17,8 +17,10 @@ class SetupTest extends TestCase {
 		$config_transformer = new WPConfigTransformer( __DIR__ . '/fixtures/wp-config-not-writable.php' );
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testFileNotWritableReadOnly() {
-		$this->expectNotToPerformAssertions();
 		chmod( __DIR__ . '/fixtures/wp-config-not-writable.php', 0444 );
 		$config_transformer = new WPConfigTransformer( __DIR__ . '/fixtures/wp-config-not-writable.php', true );
 	}
