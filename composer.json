@@ -44,6 +44,11 @@
             "@behat"
         ]
     },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "1.x-dev"
+        }
+    },
     "support": {
         "issues": "https://github.com/wp-cli/wp-config-transformer/issues"
     }
