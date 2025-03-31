@@ -3,3 +3,5 @@
 /tests/wp-config-test*.php
 /vendor/
 composer.lock
+.phpunit.result.cache
+.phpunit.cache

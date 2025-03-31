@@ -38,14 +38,14 @@ class WPConfigTransformer {
 	 *
 	 * @param string $wp_config_path Path to a wp-config.php file.
 	 */
-	public function __construct( $wp_config_path ) {
+	public function __construct( $wp_config_path, $read_only = false ) {
 		$basename = basename( $wp_config_path );
 
 		if ( ! file_exists( $wp_config_path ) ) {
 			throw new Exception( "{$basename} does not exist." );
 		}
 
-		if ( ! is_writable( $wp_config_path ) ) {
+		if ( ! $read_only && ! is_writable( $wp_config_path ) ) {
 			throw new Exception( "{$basename} is not writable." );
 		}
 
@@ -70,7 +70,7 @@ class WPConfigTransformer {
 			throw new Exception( 'Config file is empty.' );
 		}
 		// Normalize the newline to prevent an issue coming from OSX.
-		$this->wp_config_src = str_replace( array( "\n\r", "\r" ), "\n", $wp_config_src );
+		$this->wp_config_src = str_replace( array( "\r\n", "\n\r", "\r" ), "\n", $wp_config_src );
 		$this->wp_configs    = $this->parse_wp_config( $this->wp_config_src );
 
 		if ( ! isset( $this->wp_configs[ $type ] ) ) {
@@ -288,7 +288,13 @@ class WPConfigTransformer {
 		// Strip comments.
 		foreach ( token_get_all( $src ) as $token ) {
 			if ( in_array( $token[0], array( T_COMMENT, T_DOC_COMMENT ), true ) ) {
-				$src = str_replace( $token[1], '', $src );
+				if ( '//' === $token[1] ) {
+					// For empty line comments, actually remove empty line comments instead of all double-slashes.
+					// See: https://github.com/wp-cli/wp-config-transformer/issues/47
+					$src = preg_replace( '/' . preg_quote( '//', '/' ) . '$/m', '', $src );
+				} else {
+					$src = str_replace( $token[1], '', $src );
+				}
 			}
 		}
 
