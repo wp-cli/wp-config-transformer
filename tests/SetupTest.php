@@ -17,6 +17,14 @@ class SetupTest extends TestCase {
 		$config_transformer = new WPConfigTransformer( __DIR__ . '/fixtures/wp-config-not-writable.php' );
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
+	public function testFileNotWritableReadOnly() {
+		chmod( __DIR__ . '/fixtures/wp-config-not-writable.php', 0444 );
+		$config_transformer = new WPConfigTransformer( __DIR__ . '/fixtures/wp-config-not-writable.php', true );
+	}
+
 	public function testFileEmpty() {
 		$this->expectException( Exception::class );
 		$this->expectExceptionMessage( 'Config file is empty.' );
