@@ -1,6 +1,7 @@
 <?php
 
 use WP_CLI\Tests\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class UpdateTest extends TestCase {
 
@@ -168,6 +169,7 @@ class UpdateTest extends TestCase {
 	/**
 	 * @dataProvider constantValueEscapedCorrectlyProvider
 	 */
+	#[DataProvider( 'constantValueEscapedCorrectlyProvider' )] // phpcs:ignore PHPCompatibility.Attributes.NewAttributes.PHPUnitAttributeFound
 	public function testConstantValueEscapedCorrectly( $value ) {
 		$name = 'TEST_CONST_VALUE_ESCAPED';
 		self::$config_transformer->update(
@@ -185,7 +187,7 @@ class UpdateTest extends TestCase {
 		$this->assertEquals( "'" . $value . "'", self::$config_transformer->get_value( 'constant', $name ) );
 	}
 
-	public function constantValueEscapedCorrectlyProvider() {
+	public static function constantValueEscapedCorrectlyProvider() {
 		return array(
 			array( '$12345abcde' ),
 			array( 'abc$12345de' ),
