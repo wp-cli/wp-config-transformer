@@ -187,7 +187,7 @@ class UpdateTest extends TestCase {
 		$this->assertEquals( "'" . $value . "'", self::$config_transformer->get_value( 'constant', $name ) );
 	}
 
-	public function constantValueEscapedCorrectlyProvider() {
+	public static function constantValueEscapedCorrectlyProvider() {
 		return array(
 			array( '$12345abcde' ),
 			array( 'abc$12345de' ),
