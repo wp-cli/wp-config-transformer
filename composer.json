@@ -11,18 +11,20 @@
         }
     ],
     "config": {
+        "lock": false,
         "process-timeout": 7200,
         "sort-packages": true,
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true,
-            "johnpbloch/wordpress-core-installer": true
+            "johnpbloch/wordpress-core-installer": true,
+            "phpstan/extension-installer": true
         }
     },
     "require": {
-        "php": "^5.6 || ^7.0 || ^8.0"
+        "php": ">=7.2.24"
     },
     "require-dev": {
-        "wp-cli/wp-cli-tests": "^4.0"
+        "wp-cli/wp-cli-tests": "^4.0 || ^5.0"
     },
     "autoload": {
         "files": [ "src/WPConfigTransformer.php" ]
@@ -34,12 +36,14 @@
         "behat-rerun": "rerun-behat-tests",
         "lint": "run-linter-tests",
         "phpcs": "run-phpcs-tests",
+        "phpstan": "run-phpstan-tests",
         "phpcbf": "run-phpcbf-cleanup",
         "phpunit": "run-php-unit-tests",
         "prepare-tests": "install-package-tests",
         "test": [
             "@lint",
             "@phpcs",
+            "@phpstan",
             "@phpunit",
             "@behat"
         ]
