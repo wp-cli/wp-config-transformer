@@ -16,7 +16,7 @@ class MultilineTest extends TestCase {
 		 */
 		file_put_contents(
 			self::$test_config_path,
-			<<<EOF
+			<<<'EOF'
 <?php
 define('FIRST_CONSTANT', true); //
 define('SECOND_CONSTANT', 'oldvalue');

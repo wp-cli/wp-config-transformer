@@ -18,7 +18,7 @@ class EmptyLineCommentTest extends TestCase {
 
 		file_put_contents(
 			self::$test_config_path,
-			<<<EOF
+			<<<'EOF'
 <?php
 // Empty Line Comment
 // See: https://github.com/wp-cli/wp-config-transformer/issues/47

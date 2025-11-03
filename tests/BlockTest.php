@@ -29,6 +29,11 @@ class BlockTest extends TestCase {
 			)
 		);
 
+		// Trailing commas were introduced in PHP 7.3, see https://wiki.php.net/rfc/trailing-comma-function-calls.
+		if ( PHP_VERSION_ID > 70200 ) {
+			self::$block_data['constant'] += self::getConstantsWithTrailingComma();
+		}
+
 		self::$block_data['variable'] = array_values(
 			array_filter(
 				$block_data,
@@ -61,6 +66,23 @@ class BlockTest extends TestCase {
 		self::$test_config_path = __DIR__ . '/wp-config-test-block.php';
 		file_put_contents( self::$test_config_path, $contents );
 		self::$config_transformer = new WPConfigTransformer( self::$test_config_path );
+	}
+
+	private static function getConstantsWithTrailingComma() {
+		// Note: Heredoc/nowdoc with an indented closing marker is not supported in PHP 7.2 or earlier.
+		$multiline = <<<'MULTILIE'
+			define(
+				"TEST_CONST_#", "oldvalue",
+			);
+MULTILIE;
+
+		return [
+			'define("TEST_CONST_#", "oldvalue",);',
+			'define("TEST_CONST_#", "oldvalue", );',
+			'define("TEST_CONST_#", "oldvalue",  );',
+			'define("TEST_CONST_#", "oldvalue", false,   );',
+			$multiline,
+		];
 	}
 
 	public static function tear_down_after_class() {
