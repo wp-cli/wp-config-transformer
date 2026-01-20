@@ -114,12 +114,14 @@ class WPConfigTransformer {
 	 * @throws Exception If the config value provided is not a string.
 	 * @throws Exception If the config placement anchor could not be located.
 	 *
-	 * @param string                     $type    Config type (constant or variable).
-	 * @param string                     $name    Config name.
-	 * @param string                     $value   Config value.
-	 * @param array<string, bool|string> $options (optional) Array of special behavior options.
+	 * @param string               $type    Config type (constant or variable).
+	 * @param string               $name    Config name.
+	 * @param string               $value   Config value.
+	 * @param array<string, mixed> $options (optional) Array of special behavior options.
 	 *
 	 * @return bool
+	 *
+	 * @phpstan-param array{raw?: bool, anchor?: string, separator?: string, placement?: 'before'|'after'} $options
 	 */
 	public function add( $type, $name, $value, array $options = array() ) {
 		if ( ! is_string( $value ) ) {
@@ -164,12 +166,14 @@ class WPConfigTransformer {
 	 *
 	 * @throws Exception If the config value provided is not a string.
 	 *
-	 * @param string              $type    Config type (constant or variable).
-	 * @param string              $name    Config name.
-	 * @param string              $value   Config value.
-	 * @param array<string, bool> $options (optional) Array of special behavior options.
+	 * @param string               $type    Config type (constant or variable).
+	 * @param string               $name    Config name.
+	 * @param string               $value   Config value.
+	 * @param array<string, mixed> $options (optional) Array of special behavior options.
 	 *
 	 * @return bool
+	 *
+	 * @phpstan-param array{raw?: bool, anchor?: string, separator?: string, placement?: 'before'|'after'} $options
 	 */
 	public function update( $type, $name, $value, array $options = array() ) {
 		if ( ! is_string( $value ) ) {
