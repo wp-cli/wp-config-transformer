@@ -236,8 +236,7 @@ class WPConfigTransformer {
 
 		if ( 'constant' === $type ) {
 			$pattern = sprintf(
-				"/(?:defined\s*\(\s*['\"]%s['\"]\s*\)\s*(?:or|\|\|)\s*)?\bdefine\s*\(\s*['\"]%s['\"]\s*,\s*(('[^']*'|\"[^\"]*\")|\s*(?:[\s\S]*?))\s*\)\s*;\s*/mi",
-				preg_quote( $name, '/' ),
+				"/(?:defined\s*\(\s*['\"][^'\\\"]+['\"]\s*\)\s*(?:or|\|\|)\s*)?\bdefine\s*\(\s*['\"]%s['\"]\s*,\s*(('[^']*'|\"[^\"]*\")|\s*(?:[\s\S]*?))\s*\)\s*;\s*/mi",
 				preg_quote( $name, '/' )
 			);
 		} else {
