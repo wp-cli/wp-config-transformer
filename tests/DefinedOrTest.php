@@ -76,6 +76,10 @@ class DefinedOrTest extends TestCase {
 			)
 		);
 		$this->assertSame( "'normalized_db'", self::$config_transformer->get_value( 'constant', 'DB_NAME' ) );
+
+		$contents = file_get_contents( self::$test_config_path );
+		$this->assertStringNotContainsString( "defined( 'DB_NAME'", $contents );
+		$this->assertStringContainsString( "define( 'DB_NAME', 'normalized_db' );", $contents );
 	}
 
 	public function testRemoveWithOrPattern() {
