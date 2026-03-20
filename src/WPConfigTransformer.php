@@ -236,7 +236,7 @@ class WPConfigTransformer {
 
 		if ( 'constant' === $type ) {
 			$pattern = sprintf(
-				"/\bdefine\s*\(\s*['\"]%s['\"]\s*,\s*(('[^']*'|\"[^\"]*\")|\s*(?:[\s\S]*?))\s*\)\s*;\s*/mi",
+				"/(?:defined\s*\(\s*['\"][^'\\\"]+['\"]\s*\)\s*(?:or|\|\|)\s*)?\bdefine\s*\(\s*['\"]%s['\"]\s*,\s*(('[^']*'|\"[^\"]*\")|\s*(?:[\s\S]*?))\s*\)\s*;\s*/mi",
 				preg_quote( $name, '/' )
 			);
 		} else {
@@ -317,7 +317,7 @@ class WPConfigTransformer {
 			}
 		}
 
-		preg_match_all( '/(?<=^|;|<\?php\s|<\?\s)(\h*define\s*\(\s*[\'"](\w*?)[\'"]\s*)(,\s*(\'\'|""|\'.*?[^\\\\]\'|".*?[^\\\\]"|.*?)\s*,?\s*)((?:,\s*(?:true|false)[,\s]*)?\)\s*;)/ims', $src, $constants );
+		preg_match_all( '/(?<=^|;|<\?php\s|<\?\s)(\h*(?:defined\s*\(\s*[\'"][\w]+[\'"]\s*\)\s*(?:or|\|\|)\s*)?define\s*\(\s*[\'"](\w*?)[\'"]\s*)(,\s*(\'\'|""|\'.*?[^\\\\]\'|".*?[^\\\\]"|.*?)\s*,?\s*)((?:,\s*(?:true|false)[,\s]*)?\)\s*;)/ims', $src, $constants );
 		preg_match_all( '/(?<=^|;|<\?php\s|<\?\s)(\h*\$(\w+)\s*=)(\s*(\'\'|""|\'.*?[^\\\\]\'|".*?[^\\\\]"|.*?)\s*;)/ims', $src, $variables );
 
 		if ( ! empty( $constants[0] ) && ! empty( $constants[1] ) && ! empty( $constants[2] ) && ! empty( $constants[3] ) && ! empty( $constants[4] ) && ! empty( $constants[5] ) ) {
