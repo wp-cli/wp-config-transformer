@@ -45,11 +45,15 @@
 	</rule>
 
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound">
-		<exclude-pattern>tests/fixtures/wp-config-(?:example|not-writable)\.php$</exclude-pattern>
+		<exclude-pattern>tests/fixtures/wp-config-(?:example|not-writable|concat)\.php$</exclude-pattern>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound">
+		<exclude-pattern>tests/fixtures/wp-config-concat\.php$</exclude-pattern>
 	</rule>
 
 	<rule ref="WordPress.WP.GlobalVariablesOverride.Prohibited">
-		<exclude-pattern>tests/fixtures/wp-config-(?:example|not-writable)\.php$</exclude-pattern>
+		<exclude-pattern>tests/fixtures/wp-config-(?:example|not-writable|concat)\.php$</exclude-pattern>
 	</rule>
 
 	<rule ref="Squiz.PHP.CommentedOutCode.Found">
