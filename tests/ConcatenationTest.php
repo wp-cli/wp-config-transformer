@@ -20,11 +20,11 @@ class ConcatenationTest extends TestCase {
 
 	public static function existsProvider() {
 		return array(
-			'concatenation variable itself'          => array( 'variable', 'do_redirect' ),
-			'variable after concatenation'           => array( 'variable', 'table_prefix' ),
-			'constant after concatenation variable'  => array( 'constant', 'DB_NAME' ),
-			'constant with multiline string value'   => array( 'constant', 'CUSTOM_CSS' ),
-			'variable after multiline string value'  => array( 'variable', 'after_multiline' ),
+			'concatenation variable itself'         => array( 'variable', 'do_redirect' ),
+			'variable after concatenation'          => array( 'variable', 'table_prefix' ),
+			'constant after concatenation variable' => array( 'constant', 'DB_NAME' ),
+			'constant with multiline string value'  => array( 'constant', 'CUSTOM_CSS' ),
+			'variable after multiline string value' => array( 'variable', 'after_multiline' ),
 		);
 	}
 
