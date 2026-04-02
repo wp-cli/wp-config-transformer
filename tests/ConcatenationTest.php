@@ -1,6 +1,7 @@
 <?php
 
 use WP_CLI\Tests\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class ConcatenationTest extends TestCase {
 
@@ -17,27 +18,26 @@ class ConcatenationTest extends TestCase {
 		unlink( self::$config_path );
 	}
 
-	public function testVariableAfterConcatenationAssignmentExists() {
-		$this->assertTrue( self::$config_transformer->exists( 'variable', 'table_prefix' ), '$table_prefix should be found after a concatenation assignment' );
+	public static function existsProvider() {
+		return array(
+			'concatenation variable itself'          => array( 'variable', 'do_redirect' ),
+			'variable after concatenation'           => array( 'variable', 'table_prefix' ),
+			'constant after concatenation variable'  => array( 'constant', 'DB_NAME' ),
+			'constant with multiline string value'   => array( 'constant', 'CUSTOM_CSS' ),
+			'variable after multiline string value'  => array( 'variable', 'after_multiline' ),
+		);
 	}
 
-	public function testConcatenationVariableItselfExists() {
-		$this->assertTrue( self::$config_transformer->exists( 'variable', 'do_redirect' ), '$do_redirect should be found' );
-	}
-
-	public function testConstantAfterConcatenationAssignmentExists() {
-		$this->assertTrue( self::$config_transformer->exists( 'constant', 'DB_NAME' ), 'DB_NAME should be found after a concatenation variable' );
+	/**
+	 * @dataProvider existsProvider
+	 */
+	#[DataProvider( 'existsProvider' )] // phpcs:ignore PHPCompatibility.Attributes.NewAttributes.PHPUnitAttributeFound
+	public function testExists( $type, $name ) {
+		$label = ( 'variable' === $type ) ? "\${$name}" : $name;
+		$this->assertTrue( self::$config_transformer->exists( $type, $name ), "{$label} should be found" );
 	}
 
 	public function testVariableAfterConcatenationHasCorrectValue() {
-		$this->assertSame( "'wp_'", self::$config_transformer->get_value( 'variable', 'table_prefix' ), '$table_prefix value should be wp_' );
-	}
-
-	public function testMultilineStringValueExists() {
-		$this->assertTrue( self::$config_transformer->exists( 'constant', 'CUSTOM_CSS' ), 'CUSTOM_CSS with multiline string value should be found' );
-	}
-
-	public function testVariableAfterMultilineStringValueExists() {
-		$this->assertTrue( self::$config_transformer->exists( 'variable', 'after_multiline' ), '$after_multiline should be found after a multiline string constant' );
+		$this->assertSame( "'wp_'", self::$config_transformer->get_value( 'variable', 'table_prefix' ) );
 	}
 }
