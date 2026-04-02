@@ -32,4 +32,12 @@ class ConcatenationTest extends TestCase {
 	public function testVariableAfterConcatenationHasCorrectValue() {
 		$this->assertSame( "'wp_'", self::$config_transformer->get_value( 'variable', 'table_prefix' ), '$table_prefix value should be wp_' );
 	}
+
+	public function testMultilineStringValueExists() {
+		$this->assertTrue( self::$config_transformer->exists( 'constant', 'CUSTOM_CSS' ), 'CUSTOM_CSS with multiline string value should be found' );
+	}
+
+	public function testVariableAfterMultilineStringValueExists() {
+		$this->assertTrue( self::$config_transformer->exists( 'variable', 'after_multiline' ), '$after_multiline should be found after a multiline string constant' );
+	}
 }
