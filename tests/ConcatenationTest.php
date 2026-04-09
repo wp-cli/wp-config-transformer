@@ -59,7 +59,10 @@ class ConcatenationTest extends TestCase {
 	 */
 	#[DataProvider( 'getValueProvider' )] // phpcs:ignore PHPCompatibility.Attributes.NewAttributes.PHPUnitAttributeFound
 	public function testGetValue( $type, $name, $expected ) {
-		$this->assertSame( $expected, self::$config_transformer->get_value( $type, $name ) );
+		// Normalize line endings — get_value() does not normalize, so on
+		// Windows the returned value will contain \r\n from the fixture file.
+		$actual = str_replace( "\r\n", "\n", self::$config_transformer->get_value( $type, $name ) );
+		$this->assertSame( $expected, $actual );
 	}
 
 	public function testUpdateMultilineEntry() {
