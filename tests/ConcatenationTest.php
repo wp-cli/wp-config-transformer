@@ -9,7 +9,7 @@ class ConcatenationTest extends TestCase {
 	protected static $config_transformer;
 
 	public static function set_up_before_class() {
-		self::$config_path = __DIR__ . '/fixtures/wp-config-test-concat.php';
+		self::$config_path = __DIR__ . '/wp-config-test-concat.php';
 		copy( __DIR__ . '/fixtures/wp-config-concat.php', self::$config_path );
 		self::$config_transformer = new WPConfigTransformer( self::$config_path );
 	}
@@ -25,6 +25,9 @@ class ConcatenationTest extends TestCase {
 			'constant after concatenation variable' => array( 'constant', 'DB_NAME' ),
 			'constant with multiline string value'  => array( 'constant', 'CUSTOM_CSS' ),
 			'variable after multiline string value' => array( 'variable', 'after_multiline' ),
+			'multiline concatenation variable'      => array( 'variable', 'long_url' ),
+			'constant with multiline raw value'     => array( 'constant', 'ALLOWED_HOSTS' ),
+			'variable after multiline raw define'   => array( 'variable', 'after_array_define' ),
 		);
 	}
 

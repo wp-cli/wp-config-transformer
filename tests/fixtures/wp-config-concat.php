@@ -6,3 +6,9 @@ define( 'CUSTOM_CSS', 'body {
   color: red;
 }' );
 $after_multiline = 'found';
+$long_url = 'https://example.com'
+  . '/path';
+define( 'ALLOWED_HOSTS', array(
+  'example.com',
+) );
+$after_array_define = 'found';
