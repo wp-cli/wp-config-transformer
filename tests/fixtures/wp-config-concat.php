@@ -12,3 +12,6 @@ define( 'ALLOWED_HOSTS', array(
   'example.com',
 ) );
 $after_array_define = 'found';
+$backslash_newline = 'line1\
+line2';
+$after_backslash_newline = 'found';

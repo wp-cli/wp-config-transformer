@@ -20,14 +20,16 @@ class ConcatenationTest extends TestCase {
 
 	public static function existsProvider() {
 		return array(
-			'concatenation variable itself'         => array( 'variable', 'do_redirect' ),
-			'variable after concatenation'          => array( 'variable', 'table_prefix' ),
-			'constant after concatenation variable' => array( 'constant', 'DB_NAME' ),
-			'constant with multiline string value'  => array( 'constant', 'CUSTOM_CSS' ),
-			'variable after multiline string value' => array( 'variable', 'after_multiline' ),
-			'multiline concatenation variable'      => array( 'variable', 'long_url' ),
-			'constant with multiline raw value'     => array( 'constant', 'ALLOWED_HOSTS' ),
-			'variable after multiline raw define'   => array( 'variable', 'after_array_define' ),
+			'concatenation variable itself'           => array( 'variable', 'do_redirect' ),
+			'variable after concatenation'            => array( 'variable', 'table_prefix' ),
+			'constant after concatenation variable'   => array( 'constant', 'DB_NAME' ),
+			'constant with multiline string value'    => array( 'constant', 'CUSTOM_CSS' ),
+			'variable after multiline string value'   => array( 'variable', 'after_multiline' ),
+			'multiline concatenation variable'        => array( 'variable', 'long_url' ),
+			'constant with multiline raw value'       => array( 'constant', 'ALLOWED_HOSTS' ),
+			'variable after multiline raw define'     => array( 'variable', 'after_array_define' ),
+			'backslash-newline in quoted string'      => array( 'variable', 'backslash_newline' ),
+			'variable after backslash-newline string' => array( 'variable', 'after_backslash_newline' ),
 		);
 	}
 
