@@ -44,6 +44,8 @@
 		<exclude-pattern>tests/fixtures/wp-config-empty\.php$</exclude-pattern>
 	</rule>
 
+	<exclude-pattern>tests/fixtures/wp-config-concat\.php$</exclude-pattern>
+
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound">
 		<exclude-pattern>tests/fixtures/wp-config-(?:example|not-writable)\.php$</exclude-pattern>
 	</rule>
