@@ -173,7 +173,7 @@ class WPConfigTransformer {
 	 *
 	 * @return bool
 	 *
-	 * @phpstan-param array{raw?: bool, anchor?: string, separator?: string, placement?: 'before'|'after'} $options
+	 * @phpstan-param array{add?: bool, raw?: bool, normalize?: bool, anchor?: string, separator?: string, placement?: 'before'|'after'} $options
 	 */
 	public function update( $type, $name, $value, array $options = array() ) {
 		if ( ! is_string( $value ) ) {
