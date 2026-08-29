@@ -99,6 +99,8 @@ $config_transformer->update( 'constant', 'FOO', 'bar', array( 'placement' => 'be
 $config_transformer->update( 'constant', 'BAZ', 'qux', array( 'placement' => 'after' ) );
 ```
 
+With the `after` placement, the config is added on the line following the anchor. An anchor may match only part of a line — the default one matches the beginning of the "stop editing" comment — and is never split in two.
+
 ### Anchor separator
 
 By default, the separator between a new config and its anchor string is an EOL ("\n" on *nix and "\r\n" on Windows).

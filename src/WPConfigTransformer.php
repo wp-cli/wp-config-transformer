@@ -156,9 +156,19 @@ class WPConfigTransformer {
 			}
 
 			$new_src = $this->normalize( $type, $name, $this->format_value( $value, $raw ) );
-			$new_src = ( 'after' === $placement ) ? $anchor . $separator . $new_src : $new_src . $separator . $anchor;
-			// Only replace the first occurrence, in case the anchor appears more than once.
-			$contents = substr_replace( $this->wp_config_src, $new_src, $anchor_pos, strlen( $anchor ) );
+
+			if ( 'after' === $placement ) {
+				// Append past the end of the anchor's line: an anchor can match just part of
+				// a line, and the config would otherwise be inserted into the middle of it.
+				// A newline of the anchor's own already ends that line.
+				$anchor_end = $anchor_pos + strlen( rtrim( $anchor, "\n" ) );
+				$line_end   = strpos( $this->wp_config_src, "\n", $anchor_end );
+				$insert_pos = ( false === $line_end ) ? strlen( $this->wp_config_src ) : $line_end;
+				$contents   = substr_replace( $this->wp_config_src, $separator . $new_src, $insert_pos, 0 );
+			} else {
+				// Only replace the first occurrence, in case the anchor appears more than once.
+				$contents = substr_replace( $this->wp_config_src, $new_src . $separator . $anchor, $anchor_pos, strlen( $anchor ) );
+			}
 		}
 
 		return $this->save( $contents );
