@@ -84,7 +84,7 @@ The `raw` option means that instead of placing the value inside the config as a 
 
 ### Anchor string
 
-The anchor string is the piece of text that additions will be anchored to.
+The anchor string is the piece of text that additions will be anchored to. If it occurs more than once, only its first occurrence is used.
 
 ```php
 $config_transformer->update( 'constant', 'FOO', 'bar', array( 'anchor' => '/** Absolute path to the WordPress directory' ) ); // Default
