@@ -103,6 +103,29 @@ class AnchorPlacementTest extends TestCase {
 		);
 	}
 
+	public function testAfterPlacementWithAnchorEndingInNewline() {
+		$transformer = $this->get_transformer(
+			"<?php\ndefine( 'TEST_ANCHOR_DB', 'test_db' );\n" . self::ANCHOR_LINE . "\ndefine( 'TEST_ANCHOR_NEXT', 'next' );\n"
+		);
+
+		$this->assertTrue(
+			$transformer->add(
+				'constant',
+				'TEST_CONST_AFTER_ANCHOR_NEWLINE',
+				'foo',
+				array(
+					'anchor'    => self::ANCHOR_LINE . "\n",
+					'placement' => 'after',
+				)
+			)
+		);
+
+		$this->assertSame(
+			"<?php\ndefine( 'TEST_ANCHOR_DB', 'test_db' );\n" . self::ANCHOR_LINE . PHP_EOL . "define( 'TEST_CONST_AFTER_ANCHOR_NEWLINE', 'foo' );\ndefine( 'TEST_ANCHOR_NEXT', 'next' );\n",
+			(string) file_get_contents( self::$test_config_path )
+		);
+	}
+
 	public function testAfterPlacementWithoutTrailingNewline() {
 		$transformer = $this->get_transformer( "<?php\ndefine( 'TEST_ANCHOR_DB', 'test_db' );\n" . self::ANCHOR_LINE );
 
