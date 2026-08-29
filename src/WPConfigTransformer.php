@@ -155,8 +155,8 @@ class WPConfigTransformer {
 				throw new Exception( 'Unable to locate placement anchor.' );
 			}
 
-			$new_src  = $this->normalize( $type, $name, $this->format_value( $value, $raw ) );
-			$new_src  = ( 'after' === $placement ) ? $anchor . $separator . $new_src : $new_src . $separator . $anchor;
+			$new_src = $this->normalize( $type, $name, $this->format_value( $value, $raw ) );
+			$new_src = ( 'after' === $placement ) ? $anchor . $separator . $new_src : $new_src . $separator . $anchor;
 			// Only replace the first occurrence, in case the anchor appears more than once.
 			$contents = substr_replace( $this->wp_config_src, $new_src, $anchor_pos, strlen( $anchor ) );
 		}
