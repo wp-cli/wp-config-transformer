@@ -111,6 +111,7 @@ class WPConfigTransformer {
 	/**
 	 * Adds a config to the wp-config.php file.
 	 *
+	 * @throws Exception If the config name is not a valid PHP identifier.
 	 * @throws Exception If the config value provided is not a string.
 	 * @throws Exception If the config placement anchor could not be located.
 	 *
@@ -124,6 +125,10 @@ class WPConfigTransformer {
 	 * @phpstan-param array{raw?: bool, anchor?: string, separator?: string, placement?: 'before'|'after'} $options
 	 */
 	public function add( $type, $name, $value, array $options = array() ) {
+		if ( ! preg_match( '/^[A-Za-z_][A-Za-z0-9_]*$/D', $name ) ) {
+			throw new Exception( 'Config name must be a valid PHP identifier.' );
+		}
+
 		if ( ! is_string( $value ) ) {
 			throw new Exception( 'Config value must be a string.' );
 		}
@@ -177,6 +182,7 @@ class WPConfigTransformer {
 	/**
 	 * Updates an existing config in the wp-config.php file.
 	 *
+	 * @throws Exception If the config name is not a valid PHP identifier.
 	 * @throws Exception If the config value provided is not a string.
 	 *
 	 * @param string               $type    Config type (constant or variable).

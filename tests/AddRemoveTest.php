@@ -1,5 +1,6 @@
 <?php
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use WP_CLI\Tests\TestCase;
 
 class AddRemoveTest extends TestCase {
@@ -171,6 +172,60 @@ class AddRemoveTest extends TestCase {
 		$this->expectException( Exception::class );
 		$this->expectExceptionMessage( 'Unable to locate placement anchor.' );
 		self::$config_transformer->add( 'variable', 'test_var_add_no_anchor', 'foo', array( 'anchor' => 'nothingtoseehere' ) );
+	}
+
+	/**
+	 * @dataProvider invalidNameProvider
+	 */
+	#[DataProvider( 'invalidNameProvider' )] // phpcs:ignore PHPCompatibility.Attributes.NewAttributes.PHPUnitAttributeFound
+	public function testAddConstantInvalidName( $name ) {
+		$this->expectException( Exception::class );
+		$this->expectExceptionMessage( 'Config name must be a valid PHP identifier.' );
+		self::$config_transformer->add( 'constant', $name, 'foo' );
+	}
+
+	/**
+	 * @dataProvider invalidNameProvider
+	 */
+	#[DataProvider( 'invalidNameProvider' )] // phpcs:ignore PHPCompatibility.Attributes.NewAttributes.PHPUnitAttributeFound
+	public function testAddVariableInvalidName( $name ) {
+		$this->expectException( Exception::class );
+		$this->expectExceptionMessage( 'Config name must be a valid PHP identifier.' );
+		self::$config_transformer->add( 'variable', $name, 'foo' );
+	}
+
+	/**
+	 * @dataProvider invalidNameProvider
+	 */
+	#[DataProvider( 'invalidNameProvider' )] // phpcs:ignore PHPCompatibility.Attributes.NewAttributes.PHPUnitAttributeFound
+	public function testUpdateInvalidName( $name ) {
+		$this->expectException( Exception::class );
+		$this->expectExceptionMessage( 'Config name must be a valid PHP identifier.' );
+		self::$config_transformer->update( 'constant', $name, 'foo' );
+	}
+
+	public function testInvalidNameLeavesFileUnchanged() {
+		$before = file_get_contents( self::$test_config_path );
+		try {
+			self::$config_transformer->add( 'constant', "TEST', 'foo' ); //", 'foo' );
+		} catch ( Exception $e ) {
+			// Expected.
+		}
+		$this->assertSame( $before, file_get_contents( self::$test_config_path ) );
+	}
+
+	public static function invalidNameProvider() {
+		return array(
+			array( '' ),
+			array( '1TEST' ),
+			array( 'TEST-NAME' ),
+			array( 'TEST NAME' ),
+			array( "TEST'NAME" ),
+			array( 'TEST"NAME' ),
+			array( "TEST\nNAME" ),
+			array( "TEST_NAME\n" ),
+			array( 'TEST_NAME;' ),
+		);
 	}
 
 	public function testAddConstantNonString() {
