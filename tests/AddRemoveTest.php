@@ -205,7 +205,7 @@ class AddRemoveTest extends TestCase {
 	}
 
 	public function testInvalidNameLeavesFileUnchanged() {
-		$before = file_get_contents( self::$test_config_path );
+		$before  = file_get_contents( self::$test_config_path );
 		$message = '';
 		try {
 			self::$config_transformer->add( 'constant', "TEST', 'foo' ); //", 'foo' );
