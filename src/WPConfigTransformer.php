@@ -182,7 +182,7 @@ class WPConfigTransformer {
 	/**
 	 * Updates an existing config in the wp-config.php file.
 	 *
-	 * @throws Exception If the config name is not a valid PHP identifier.
+	 * @throws Exception If the config is missing, is to be added, and its name is not a valid PHP identifier.
 	 * @throws Exception If the config value provided is not a string.
 	 *
 	 * @param string               $type    Config type (constant or variable).
