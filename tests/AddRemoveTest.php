@@ -204,6 +204,12 @@ class AddRemoveTest extends TestCase {
 		self::$config_transformer->update( 'constant', $name, 'foo' );
 	}
 
+	public function testAddConstantNonStringName() {
+		$this->expectException( Exception::class );
+		$this->expectExceptionMessage( 'Config name must be a valid PHP identifier.' );
+		self::$config_transformer->add( 'constant', null, 'foo' );
+	}
+
 	public function testInvalidNameLeavesFileUnchanged() {
 		$before  = file_get_contents( self::$test_config_path );
 		$message = '';

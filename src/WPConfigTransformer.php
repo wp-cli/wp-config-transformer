@@ -125,7 +125,7 @@ class WPConfigTransformer {
 	 * @phpstan-param array{raw?: bool, anchor?: string, separator?: string, placement?: 'before'|'after'} $options
 	 */
 	public function add( $type, $name, $value, array $options = array() ) {
-		if ( ! preg_match( '/^[A-Za-z_][A-Za-z0-9_]*$/D', $name ) ) {
+		if ( ! is_string( $name ) || ! preg_match( '/^[A-Za-z_][A-Za-z0-9_]*$/D', $name ) ) {
 			throw new Exception( 'Config name must be a valid PHP identifier.' );
 		}
 
