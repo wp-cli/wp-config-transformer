@@ -384,10 +384,43 @@ class WPConfigTransformer {
 			return false;
 		}
 
-		$result = file_put_contents( $this->wp_config_path, $contents, LOCK_EX );
+		$real_path = realpath( $this->wp_config_path ) ?: $this->wp_config_path;
+		$dir       = dirname( $real_path );
 
-		if ( false === $result ) {
-			throw new Exception( 'Failed to update the config file.' );
+		if ( is_writable( $dir ) ) {
+			$temp_file = tempnam( $dir, 'wp_config_' );
+
+			if ( false === $temp_file ) {
+				$temp_file = $dir . '/.' . basename( $real_path ) . '.' . uniqid( 'tmp_', true );
+			}
+
+			$result = file_put_contents( $temp_file, $contents, LOCK_EX );
+
+			if ( false === $result ) {
+				if ( file_exists( $temp_file ) ) {
+					@unlink( $temp_file );
+				}
+				throw new Exception( 'Failed to update the config file.' );
+			}
+
+			$perms = @fileperms( $real_path );
+			if ( false !== $perms ) {
+				// phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+				@chmod( $temp_file, $perms & 0777 );
+			}
+
+			if ( ! @rename( $temp_file, $real_path ) ) {
+				if ( file_exists( $temp_file ) ) {
+					@unlink( $temp_file );
+				}
+				throw new Exception( 'Failed to update the config file.' );
+			}
+		} else {
+			$result = file_put_contents( $this->wp_config_path, $contents, LOCK_EX );
+
+			if ( false === $result ) {
+				throw new Exception( 'Failed to update the config file.' );
+			}
 		}
 
 		return true;
