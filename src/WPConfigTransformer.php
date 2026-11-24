@@ -409,6 +409,15 @@ class WPConfigTransformer {
 	 * is open on Windows), the temporary file is removed and false is returned so that
 	 * the caller can fall back to writing the file in place.
 	 *
+	 * Known limitation: because the config file is replaced by a new inode, attributes
+	 * that PHP cannot read or copy without shelling out are not carried over. This
+	 * includes POSIX access ACLs (e.g. a named-user read grant for the web server user),
+	 * other extended attributes such as SELinux labels, and additional hard links. The
+	 * new file only gets the directory's default ACL, if any, and its group mode bits
+	 * are taken from the old file's mode, which on a file with an ACL reflects the ACL
+	 * mask rather than the owning group's entry. Sites that rely on per-file ACLs for
+	 * wp-config.php should grant access through a default ACL on the directory instead.
+	 *
 	 * @throws Exception If the temporary file cannot be written completely.
 	 *
 	 * @param string $real_path Resolved path of the wp-config.php file.
