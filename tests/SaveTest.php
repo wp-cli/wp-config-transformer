@@ -40,7 +40,10 @@ class SaveTest extends TestCase {
 
 	public function testSaveSymlinkPreservesSymlink() {
 		$link_file = $this->test_dir . '/wp-config-link.php';
-		symlink( $this->test_file, $link_file );
+		// phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+		if ( ! @symlink( $this->test_file, $link_file ) ) {
+			$this->markTestSkipped( 'Symlinks cannot be created in this environment.' );
+		}
 
 		$transformer = new WPConfigTransformer( $link_file );
 		$this->assertTrue( $transformer->update( 'constant', 'DB_NAME', 'symlink_db' ) );
@@ -53,6 +56,10 @@ class SaveTest extends TestCase {
 	}
 
 	public function testSaveFallbackWhenDirectoryNotWritable() {
+		if ( function_exists( 'posix_geteuid' ) && 0 === posix_geteuid() ) {
+			$this->markTestSkipped( 'root can write to a 0555 directory, so the fallback is not reached.' );
+		}
+
 		// Make directory non-writable
 		chmod( $this->test_dir, 0555 );
 
@@ -62,5 +69,31 @@ class SaveTest extends TestCase {
 		$this->assertStringContainsString( 'fallback_db', file_get_contents( $this->test_file ) );
 
 		chmod( $this->test_dir, 0777 );
+	}
+
+	public function testAtomicSaveLeavesNoTemporaryFiles() {
+		$transformer = new WPConfigTransformer( $this->test_file );
+		$this->assertTrue( $transformer->update( 'constant', 'DB_NAME', 'clean_db' ) );
+
+		$this->assertSame( array( 'wp-config.php' ), array_values( array_diff( scandir( $this->test_dir ), array( '.', '..' ) ) ) );
+	}
+
+	public function testAtomicSavePreservesOwnership() {
+		if ( ! function_exists( 'posix_geteuid' ) || 0 !== posix_geteuid() ) {
+			$this->markTestSkipped( 'Changing file ownership requires root.' );
+		}
+
+		chown( $this->test_file, 65534 );
+		chgrp( $this->test_file, 65534 );
+		chmod( $this->test_file, 0640 );
+
+		$transformer = new WPConfigTransformer( $this->test_file );
+		$this->assertTrue( $transformer->update( 'constant', 'DB_NAME', 'owned_db' ) );
+
+		clearstatcache();
+		$this->assertStringContainsString( 'owned_db', file_get_contents( $this->test_file ) );
+		$this->assertSame( 65534, fileowner( $this->test_file ) );
+		$this->assertSame( 65534, filegroup( $this->test_file ) );
+		$this->assertSame( 0640, fileperms( $this->test_file ) & 0777 );
 	}
 }
