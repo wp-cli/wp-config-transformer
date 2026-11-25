@@ -71,6 +71,33 @@ class SaveTest extends TestCase {
 		chmod( $this->test_dir, 0777 );
 	}
 
+	public function testFailedSaveLeavesConfigIntact() {
+		if ( function_exists( 'posix_geteuid' ) && 0 === posix_geteuid() ) {
+			$this->markTestSkipped( 'root can write to read-only files, so the write does not fail.' );
+		}
+
+		$original    = file_get_contents( $this->test_file );
+		$transformer = new WPConfigTransformer( $this->test_file );
+
+		// Neither a temporary file nor an in-place write is possible now.
+		chmod( $this->test_file, 0444 );
+		chmod( $this->test_dir, 0555 );
+
+		$message = null;
+		try {
+			// phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- The failed write raises a warning before the exception.
+			@$transformer->update( 'constant', 'DB_NAME', 'failed_db' );
+		} catch ( Exception $e ) {
+			$message = $e->getMessage();
+		}
+
+		$this->assertSame( 'Failed to update the config file.', $message );
+
+		clearstatcache();
+		$this->assertSame( $original, file_get_contents( $this->test_file ) );
+		$this->assertSame( array( 'wp-config.php' ), array_values( array_diff( scandir( $this->test_dir ), array( '.', '..' ) ) ) );
+	}
+
 	public function testAtomicSaveLeavesNoTemporaryFiles() {
 		$transformer = new WPConfigTransformer( $this->test_file );
 		$this->assertTrue( $transformer->update( 'constant', 'DB_NAME', 'clean_db' ) );
