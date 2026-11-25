@@ -38,6 +38,26 @@ class SaveTest extends TestCase {
 		$this->assertSame( 0640, fileperms( $this->test_file ) & 0777 );
 	}
 
+	public function testAtomicSaveReplacesFileInsteadOfRewritingIt() {
+		if ( '\\' === DIRECTORY_SEPARATOR ) {
+			$this->markTestSkipped( 'Windows refuses to rename over a file that is open.' );
+		}
+
+		$original = file_get_contents( $this->test_file );
+		$handle   = fopen( $this->test_file, 'r' );
+
+		try {
+			$transformer = new WPConfigTransformer( $this->test_file );
+			$this->assertTrue( $transformer->update( 'constant', 'DB_NAME', 'replaced_db' ) );
+
+			// A handle opened before the save still points at the old file, so its contents are untouched.
+			$this->assertSame( $original, stream_get_contents( $handle ) );
+			$this->assertStringContainsString( 'replaced_db', file_get_contents( $this->test_file ) );
+		} finally {
+			fclose( $handle );
+		}
+	}
+
 	public function testSaveSymlinkPreservesSymlink() {
 		$link_file = $this->test_dir . '/wp-config-link.php';
 		// phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
