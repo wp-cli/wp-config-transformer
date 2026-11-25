@@ -390,12 +390,100 @@ class WPConfigTransformer {
 			return false;
 		}
 
-		$result = file_put_contents( $this->wp_config_path, $contents, LOCK_EX );
+		$real_path = realpath( $this->wp_config_path ) ?: $this->wp_config_path;
+		$dir       = dirname( $real_path );
 
-		if ( false === $result ) {
-			throw new Exception( 'Failed to update the config file.' );
+		if ( ! is_writable( $dir ) || ! $this->save_atomically( $real_path, $contents ) ) {
+			$this->write_file( $this->wp_config_path, $contents );
 		}
 
 		return true;
+	}
+
+	/**
+	 * Writes the new contents to a temporary file next to the config file and renames
+	 * it over the config file, so that a failed write never leaves a truncated file.
+	 *
+	 * The temporary file gets the owner, group and mode of the original file. If that is
+	 * not possible, or the rename is refused (e.g. a single-file bind mount, or a file that
+	 * is open on Windows), the temporary file is removed and false is returned so that
+	 * the caller can fall back to writing the file in place.
+	 *
+	 * Known limitation: because the config file is replaced by a new inode, attributes
+	 * that PHP cannot read or copy without shelling out are not carried over. This
+	 * includes POSIX access ACLs (e.g. a named-user read grant for the web server user),
+	 * other extended attributes such as SELinux labels, and additional hard links. The
+	 * new file only gets the directory's default ACL, if any, and its group mode bits
+	 * are taken from the old file's mode, which on a file with an ACL reflects the ACL
+	 * mask rather than the owning group's entry. Sites that rely on per-file ACLs for
+	 * wp-config.php should grant access through a default ACL on the directory instead.
+	 *
+	 * @throws Exception If the temporary file cannot be written completely.
+	 *
+	 * @param string $real_path Resolved path of the wp-config.php file.
+	 * @param string $contents  New config contents.
+	 *
+	 * @return bool True if the file was replaced, false if the caller should write in place.
+	 */
+	protected function save_atomically( $real_path, $contents ) {
+		$dir = dirname( $real_path );
+
+		// phpcs:disable WordPress.PHP.NoSilencedErrors.Discouraged -- Failures are checked below.
+		$temp_file = @tempnam( $dir, '.wp-config-' );
+
+		// tempnam() silently falls back to the system temp dir, where a rename is no longer atomic.
+		if ( false === $temp_file || realpath( dirname( $temp_file ) ) !== realpath( $dir ) ) {
+			if ( false !== $temp_file ) {
+				@unlink( $temp_file );
+			}
+			return false;
+		}
+
+		$result = @file_put_contents( $temp_file, $contents, LOCK_EX );
+
+		if ( strlen( $contents ) !== $result ) {
+			@unlink( $temp_file );
+			throw new Exception( 'Failed to update the config file.' );
+		}
+
+		$stat = @stat( $real_path );
+		if ( false !== $stat ) {
+			@chmod( $temp_file, $stat['mode'] & 0777 );
+			@chown( $temp_file, $stat['uid'] );
+			@chgrp( $temp_file, $stat['gid'] );
+		}
+		clearstatcache( true, $temp_file );
+		$temp_stat = @stat( $temp_file );
+
+		$same = false !== $stat && false !== $temp_stat
+			&& $temp_stat['uid'] === $stat['uid']
+			&& $temp_stat['gid'] === $stat['gid']
+			&& ( $temp_stat['mode'] & 0777 ) === ( $stat['mode'] & 0777 );
+
+		if ( ! $same || ! @rename( $temp_file, $real_path ) ) {
+			@unlink( $temp_file );
+			return false;
+		}
+		// phpcs:enable
+
+		return true;
+	}
+
+	/**
+	 * Writes the new contents directly to the config file.
+	 *
+	 * @throws Exception If the file cannot be written completely.
+	 *
+	 * @param string $path     Path of the wp-config.php file.
+	 * @param string $contents New config contents.
+	 *
+	 * @return void
+	 */
+	protected function write_file( $path, $contents ) {
+		$result = file_put_contents( $path, $contents, LOCK_EX );
+
+		if ( strlen( $contents ) !== $result ) {
+			throw new Exception( 'Failed to update the config file.' );
+		}
 	}
 }
